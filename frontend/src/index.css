@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+/* Base preto e branco. Cor só em pontos estratégicos: roxo azulado #6A4CFF (texto claro por cima, 5,1:1). */
+:root {
+  --snow: #fbf9fa;
+  --accent: #6a4cff;
+  --accent-deep: #3f25c9;
+  --night: #0b0a0b;
+  --coal: #161415;
+
+  --ink-soft: color-mix(in oklab, var(--snow) 72%, var(--night));
+  --line: color-mix(in oklab, var(--snow) 14%, transparent);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-snow: var(--snow);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-night: var(--night);
+  --color-coal: var(--coal);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+
+  --font-display: 'Tomorrow', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Chakra Petch', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--night);
+    overflow-x: clip;
+    scroll-behavior: smooth;
+    scrollbar-color: color-mix(in oklab, var(--snow) 35%, var(--night)) var(--night);
+    scrollbar-width: thin;
+  }
+
+  /* Sem background no body: ele seria pintado por cima do fundo do hero (z-index negativo). */
+  body {
+    color: var(--snow);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--snow);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--snow);
+    outline-offset: 4px;
+    border-radius: 999px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* Placa escura sobre o fundo do hero: o blur é para leitura. */
+@utility plate {
+  background: color-mix(in oklab, var(--night) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Fluxo de moedas da trilha: entram na primeira parada e somem na última. */
+@keyframes flow-x {
+  0% { transform: translateX(0); opacity: 0; }
+  7%, 93% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes flow-y {
+  0% { transform: translateY(0); opacity: 0; }
+  7%, 93% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+/* A parada acende quando uma moeda passa e apaga devagar. */
+@keyframes stop-pulse {
+  0% { box-shadow: 0 0 0 1.5px var(--accent), 0 0 26px -2px var(--accent); }
+  55%, 100% { box-shadow: 0 0 0 0 transparent, 0 0 0 0 transparent; }
+}
+
+.flow-x,
+.flow-y {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sem movimento: uma moeda parada no meio da trilha. */
+  .flow-x:nth-child(2) { opacity: 1; transform: translateX(50%); }
+  .flow-y:nth-child(2) { opacity: 1; transform: translateY(50%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flow-x { animation: flow-x linear infinite; }
+  .flow-y { animation: flow-y linear infinite; }
+  .stop-pulse { animation: stop-pulse ease-out infinite; }
+}
