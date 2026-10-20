@@ -10,6 +10,8 @@
 
   --ink-soft: color-mix(in oklab, var(--snow) 72%, var(--night));
   --line: color-mix(in oklab, var(--snow) 14%, transparent);
+  /* Só para erro de formulário e exclusão. 6,6:1 sobre o carvão. */
+  --danger: #ff6b6b;
 
   color-scheme: dark;
 }
@@ -22,6 +24,7 @@
   --color-coal: var(--coal);
   --color-ink-soft: var(--ink-soft);
   --color-line: var(--line);
+  --color-danger: var(--danger);
 
   --font-display: 'Tomorrow', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Chakra Petch', ui-sans-serif, system-ui, sans-serif;

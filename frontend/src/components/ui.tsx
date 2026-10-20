@@ -8,12 +8,12 @@ import { Coin } from './Coin'
 export const ease = [0.16, 1, 0.3, 1] as const
 
 // Logo: EGON com a moeda no lugar do O.
-export function Logo({ size = 'md' }: { size?: 'md' | 'lg' }) {
+export function Logo({ size = 'md', href = '#topo' }: { size?: 'md' | 'lg'; href?: string }) {
   const lg = size === 'lg'
   const [before, after] = brand.name.toUpperCase().split('O')
   return (
     <a
-      href="#topo"
+      href={href}
       aria-label={`${brand.name}, voltar ao início`}
       className={`flex items-center rounded-full font-display leading-none font-extrabold tracking-[0.06em] ${lg ? 'text-3xl' : 'text-xl'}`}
     >

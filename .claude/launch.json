@@ -15,6 +15,20 @@
         "--strictPort"
       ],
       "port": 5287
+    },
+    {
+      "name": "api",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "backend\\mvnw.cmd",
+        "-q",
+        "-f",
+        "backend/pom.xml",
+        "spring-boot:run",
+        "-Dspring-boot.run.jvmArguments=-Djdk.net.unixdomain.tmpdir=target"
+      ],
+      "port": 8080
     }
   ]
 }

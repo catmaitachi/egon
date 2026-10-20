@@ -27,11 +27,13 @@ export const brand = {
   coin: 'Ego',
 }
 
-// Rotas das telas que ainda não existem. A landing já aponta para elas.
+// Rotas das telas. O login ainda não existe; a landing já aponta para ele.
 export const routes = {
   signup: '/cadastro',
   login: '/entrar',
   partner: '/empresa/cadastro',
+  students: '/alunos',
+  partners: '/empresas',
 }
 
 export type SectionId = 'como-funciona' | 'vantagens' | 'quem-participa' | 'criar-conta'
