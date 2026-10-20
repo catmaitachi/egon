@@ -29,11 +29,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
-		<!-- Só o BCrypt. O starter de segurança inteiro fecharia todas as rotas, e a
-		     autenticação (HU01) ainda não foi implementada. -->
+		<!-- Só o BCrypt. O login (HU01) usa um token assinado próprio (pacote com.egon.auth):
+		     o starter de segurança inteiro fecharia também as rotas públicas de cadastro. -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+		<!-- E-mails de moedas recebidas e de cupons (HU07, HU10). -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
 		<dependency>

@@ -22,8 +22,8 @@ export function CadastroEmpresa() {
         {created ? (
           <SignupDone
             title="Empresa cadastrada"
-            text={`${created.nome} já faz parte do ${brand.name}. O próximo passo é publicar vantagens para os alunos.`}
-            next={{ to: routes.partners, label: 'Ver empresas' }}
+            text={`${created.nome} já faz parte do ${brand.name}. Entre com o seu login para publicar vantagens para os alunos.`}
+            next={{ to: routes.login, label: 'Entrar' }}
           />
         ) : (
           <>

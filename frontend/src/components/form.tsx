@@ -1,5 +1,14 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react'
-import { CaretDownIcon, WarningCircleIcon } from '@phosphor-icons/react'
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from 'react'
+import { CaretDownIcon, ImageIcon, WarningCircleIcon } from '@phosphor-icons/react'
 
 // Campos em pílula, como os controles da landing. O erro aparece embaixo do campo e
 // fica ligado a ele por aria-describedby, para o leitor de tela ler junto.
@@ -82,6 +91,84 @@ export function SelectField({ label, error, hint, className = '', id, placeholde
           {children}
         </select>
         <CaretDownIcon size={18} aria-hidden className="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-ink-soft" />
+      </div>
+      <FieldNote id={noteId} error={error} hint={hint} />
+    </div>
+  )
+}
+
+type TextAreaFieldProps = FieldBase & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'className'>
+
+// Texto longo (descrição, mensagem): mesma linguagem dos campos, cantos de superfície em vez de pílula.
+export function TextAreaField({ label, error, hint, className = '', id, rows = 4, ...area }: TextAreaFieldProps) {
+  const { fieldId, noteId, describedBy } = useFieldIds(id, error, hint)
+  return (
+    <div className={className}>
+      <label htmlFor={fieldId} className={labelClass}>
+        {label}
+      </label>
+      <textarea
+        id={fieldId}
+        rows={rows}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy}
+        className={`block w-full resize-y rounded-[20px] bg-night px-5 py-3 text-base text-snow ring-1 transition-shadow duration-200 placeholder:text-snow/40 focus:ring-2 focus:ring-snow focus-visible:outline-none ${
+          error ? 'ring-danger' : 'ring-snow/20 hover:ring-snow/40'
+        }`}
+        {...area}
+      />
+      <FieldNote id={noteId} error={error} hint={hint} />
+    </div>
+  )
+}
+
+type ImageFieldProps = FieldBase & { name: string; file: File | null; onFile: (file: File | null) => void }
+
+// Foto com pré-visualização. O input fica escondido; a caixa inteira abre o seletor e acende no foco.
+export function ImageField({ label, error, hint, className = '', name, file, onFile }: ImageFieldProps) {
+  const { fieldId, noteId, describedBy } = useFieldIds(undefined, error, hint)
+  const input = useRef<HTMLInputElement>(null)
+  const preview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file])
+  useEffect(() => () => {
+    if (preview) URL.revokeObjectURL(preview)
+  }, [preview])
+
+  return (
+    <div className={className}>
+      <label htmlFor={fieldId} className={labelClass}>
+        {label}
+      </label>
+      <div
+        onClick={() => input.current?.click()}
+        className={`flex cursor-pointer items-center gap-5 rounded-[20px] bg-night p-3 ring-1 transition-shadow duration-200 focus-within:ring-2 focus-within:ring-snow ${
+          error ? 'ring-danger' : 'ring-snow/20 hover:ring-snow/40'
+        }`}
+      >
+        <span className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-coal ring-1 ring-line">
+          {preview ? (
+            <img src={preview} alt="" className="size-full object-cover" />
+          ) : (
+            <ImageIcon size={28} className="text-ink-soft" aria-hidden />
+          )}
+        </span>
+        <span className="min-w-0">
+          <span className="block font-display text-sm font-semibold tracking-wide uppercase">
+            {file ? 'Trocar foto' : 'Escolher foto'}
+          </span>
+          <span className="mt-1 block truncate text-sm text-ink-soft">{file ? file.name : 'JPG, PNG, WebP ou GIF, até 5 MB.'}</span>
+        </span>
+        <input
+          ref={input}
+          id={fieldId}
+          name={name}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className="sr-only"
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => onFile(e.target.files?.[0] ?? null)}
+        />
       </div>
       <FieldNote id={noteId} error={error} hint={hint} />
     </div>

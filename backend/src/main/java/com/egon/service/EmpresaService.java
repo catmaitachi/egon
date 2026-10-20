@@ -12,6 +12,7 @@ import com.egon.dto.EmpresaResponse;
 import com.egon.exception.ApiException;
 import com.egon.model.Empresa;
 import com.egon.repository.EmpresaRepository;
+import com.egon.repository.TrocaRepository;
 import com.egon.repository.UsuarioRepository;
 import com.egon.validation.Documentos;
 
@@ -23,6 +24,8 @@ public class EmpresaService {
 
     private final EmpresaRepository empresas;
     private final UsuarioRepository usuarios;
+    private final VantagemService vantagens;
+    private final TrocaRepository trocas;
     private final PasswordEncoder senhas;
 
     @Transactional(readOnly = true)
@@ -77,9 +80,18 @@ public class EmpresaService {
         return EmpresaResponse.de(empresa);
     }
 
+    /**
+     * As vantagens vão junto. Empresa com vantagem já resgatada não sai: os cupons emitidos e
+     * o extrato dos alunos dependem dela.
+     */
     @Transactional
     public void excluir(String cnpj) {
-        empresas.delete(encontrar(cnpj));
+        Empresa empresa = encontrar(cnpj);
+        if (trocas.existsByVantagemEmpresaCnpj(empresa.getCnpj())) {
+            throw ApiException.empresaComResgates();
+        }
+        vantagens.removerTodasDa(empresa.getCnpj());
+        empresas.delete(empresa);
     }
 
     private Empresa encontrar(String cnpj) {

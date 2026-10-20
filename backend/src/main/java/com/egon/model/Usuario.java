@@ -43,6 +43,9 @@ public abstract class Usuario implements Persistable<String> {
     @Transient
     private boolean novo = true;
 
+    /** Nome de quem entrou, para a tela saudar e os e-mails assinarem (aluno, professor ou empresa). */
+    public abstract String getNome();
+
     @Override
     public boolean isNew() {
         return novo;

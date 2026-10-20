@@ -20,9 +20,7 @@ export function SignupDone({ title, text, next }: SignupDoneProps) {
           <ActionLink to="/" variant="outline">
             Voltar ao início
           </ActionLink>
-          <ActionLink to={next.to} variant="outline">
-            {next.label}
-          </ActionLink>
+          <ActionLink to={next.to}>{next.label}</ActionLink>
         </div>
       </Panel>
     </motion.div>

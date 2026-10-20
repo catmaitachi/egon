@@ -2,7 +2,6 @@ import { useTitle } from '../lib/useTitle'
 import { ActionLink } from '../components/controls'
 import { PageTitle, Shell } from '../components/Shell'
 
-// Inclui o /entrar, que a landing já linka e ainda não existe.
 export function NaoEncontrada() {
   useTitle('Página não encontrada')
   return (

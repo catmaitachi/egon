@@ -22,8 +22,8 @@ export function CadastroAluno() {
         {created ? (
           <SignupDone
             title="Conta criada"
-            text={`Tudo certo, ${created.nome.split(' ')[0]}. Sua conta começa com ${coins(created.saldo)}.`}
-            next={{ to: routes.students, label: 'Ver alunos' }}
+            text={`Tudo certo, ${created.nome.split(' ')[0]}. Sua conta começa com ${coins(created.saldo)} e você já pode entrar.`}
+            next={{ to: routes.login, label: 'Entrar' }}
           />
         ) : (
           <>

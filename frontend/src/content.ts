@@ -32,14 +32,32 @@ const count = new Intl.NumberFormat('pt-BR')
 // Quantia na moeda do site: "1 Ego", "0 Egos", "1.350 Egos".
 export const coins = (n: number) => `${count.format(n)} ${brand.coin}${n === 1 ? '' : 's'}`
 
-// Rotas das telas. O login ainda não existe; a landing já aponta para ele.
+// Rotas das telas.
 export const routes = {
   signup: '/cadastro',
   login: '/entrar',
   partner: '/empresa/cadastro',
   students: '/alunos',
   partners: '/empresas',
+  painelAluno: '/painel/aluno',
+  painelProfessor: '/painel/professor',
+  painelEmpresa: '/painel/empresa',
 }
+
+// Para onde cada perfil vai depois do login (HU01).
+export const painelDe = {
+  ALUNO: routes.painelAluno,
+  PROFESSOR: routes.painelProfessor,
+  EMPRESA: routes.painelEmpresa,
+} as const
+
+// Os tipos de vantagem da API (HU08), como aparecem na tela.
+export const tipoVantagem = { DESCONTO: 'Desconto', PRODUTO: 'Produto', SERVICO: 'Serviço' } as const
+
+const dataHora = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+
+// "20/10/2026, 17:30" a partir do horário que a API devolve (já no fuso do sistema).
+export const quando = (iso: string) => dataHora.format(new Date(iso))
 
 export type SectionId = 'como-funciona' | 'vantagens' | 'quem-participa' | 'criar-conta'
 

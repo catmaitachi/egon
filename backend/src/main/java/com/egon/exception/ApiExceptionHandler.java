@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,9 @@ public class ApiExceptionHandler {
 
     /** Campo vazio pede "Informe o CPF.", e não a regra de formato que também falhou por estar vazio. */
     private static final Set<String> OBRIGATORIEDADE = Set.of("NotBlank", "NotNull");
+
+    /** Valor que nem converteu ("abc" num número) vem antes: dizer que o campo está vazio seria falso. */
+    private static final String CONVERSAO = "typeMismatch";
 
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ErroResponse> tratarApi(ApiException e) {
@@ -43,9 +47,31 @@ public class ApiExceptionHandler {
     ErroResponse tratarValidacao(MethodArgumentNotValidException e) {
         Map<String, String> campos = new LinkedHashMap<>();
         e.getBindingResult().getFieldErrors().stream()
-                .sorted(Comparator.comparing((FieldError erro) -> !OBRIGATORIEDADE.contains(erro.getCode())))
-                .forEach(erro -> campos.putIfAbsent(erro.getField(), erro.getDefaultMessage()));
+                .sorted(Comparator.comparingInt(ApiExceptionHandler::prioridade))
+                .forEach(erro -> campos.putIfAbsent(erro.getField(), mensagem(erro)));
         return new ErroResponse("DADOS_INVALIDOS", "Confira os campos destacados.", campos);
+    }
+
+    /**
+     * Num formulário multipart, "abc" no custo nem chega à validação: falha na conversão para
+     * número, e a mensagem padrão do Spring é técnica demais para a tela.
+     */
+    private static String mensagem(FieldError erro) {
+        return CONVERSAO.equals(erro.getCode()) ? "Valor em formato inválido." : erro.getDefaultMessage();
+    }
+
+    private static int prioridade(FieldError erro) {
+        if (CONVERSAO.equals(erro.getCode())) {
+            return 0;
+        }
+        return OBRIGATORIEDADE.contains(erro.getCode()) ? 1 : 2;
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.CONTENT_TOO_LARGE)
+    ErroResponse tratarArquivoGrande() {
+        String mensagem = "A foto passa de 5 MB. Use uma imagem menor.";
+        return new ErroResponse("ARQUIVO_GRANDE_DEMAIS", mensagem, Map.of("foto", mensagem));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

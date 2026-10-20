@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.egon.auth.UsuarioLogado;
 import com.egon.dto.AlunoAtualizacaoRequest;
 import com.egon.dto.AlunoCadastroRequest;
 import com.egon.dto.AlunoResponse;
+import com.egon.dto.ExtratoResponse;
 import com.egon.service.AlunoService;
 
 import jakarta.validation.Valid;
@@ -31,6 +33,12 @@ public class AlunoController {
     @GetMapping
     List<AlunoResponse> listar() {
         return alunos.listar();
+    }
+
+    /** HU11: o extrato do aluno logado. */
+    @GetMapping("/eu/extrato")
+    ExtratoResponse extrato(UsuarioLogado usuario) {
+        return alunos.extrato(usuario);
     }
 
     @GetMapping("/{cpf}")

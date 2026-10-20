@@ -28,7 +28,7 @@ Os diagramas estão alinhados entre si e com as histórias de usuário; as diver
    - Tabelas, chaves e tipos.
 
 4. **[Modelo de Dados](Sprint%202/Modelo%20de%20Dados.md)**
-   - Reconciliação dos diagramas com as histórias de usuário: as divergências encontradas e a decisão de cada uma, o esquema relacional, o que já está implementado e o que mudou em cada imagem.
+   - Reconciliação dos diagramas com as histórias de usuário: as divergências encontradas e a decisão de cada uma, o esquema relacional, os endpoints e regras da API e o que mudou em cada imagem.
 
-5. **Implementação: CRUD de aluno e de empresa parceira**
-   - API REST em `backend/` (Spring Boot, JPA, H2) e telas em `frontend/` (React, Vite): cadastro público de aluno e de empresa (HU02, HU03) e telas de listagem, edição e exclusão.
+5. **Implementação**
+   - API REST em `backend/` (Spring Boot, JPA, H2) e telas em `frontend/` (React, Vite) para as 12 histórias: cadastros, login, professores pré-cadastrados, cota semestral, envio de moedas, vantagens com foto, troca com cupom, e-mails e extratos. Endpoints e regras no [Modelo de Dados](Sprint%202/Modelo%20de%20Dados.md#api); como rodar e as contas de teste no [README da raiz](../README.md).
