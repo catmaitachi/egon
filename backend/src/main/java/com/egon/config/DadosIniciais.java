@@ -2,8 +2,7 @@ package com.egon.config;
 
 import java.util.List;
 
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,17 +19,21 @@ import lombok.RequiredArgsConstructor;
  * <p>Instituições conveniadas são pré-cadastradas, nunca criadas pela API (HU04). Estas são
  * fictícias, com CNPJs de dígitos válidos, até a lista real ser fornecida. Só entram com a
  * tabela vazia, então reiniciar a aplicação não duplica nada.
+ *
+ * <p>Roda antes de o servidor web aceitar conexões, e não num {@code ApplicationRunner}, que
+ * roda depois: na subida, o formulário que abrisse nesse intervalo receberia listas vazias e o
+ * front-end as guardaria para a sessão inteira.
  */
 @Component
 @RequiredArgsConstructor
-class DadosIniciais implements ApplicationRunner {
+class DadosIniciais implements SmartInitializingSingleton {
 
     private final InstituicaoRepository instituicoes;
     private final CursoRepository cursos;
 
     @Override
     @Transactional
-    public void run(ApplicationArguments args) {
+    public void afterSingletonsInstantiated() {
         if (instituicoes.count() == 0) {
             instituicoes.saveAll(List.of(
                     new Instituicao("11222333000181", "Universidade Horizonte", "Universidade"),

@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * O que todo perfil que faz login tem em comum: login e senha.
  *
- * <p>O diagrama relacional não tem tabela USUARIO: login e senha são colunas de cada
+ * <p>O modelo de dados não tem tabela USUARIO: login e senha são colunas de cada
  * tabela de perfil (ALUNO, EMPRESA, PROFESSOR). Por isso aqui é {@code @MappedSuperclass}
  * e não uma entidade. A unicidade do login entre perfis, que o banco não garante, é
  * conferida pelo {@code UsuarioRepository}.

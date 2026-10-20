@@ -77,6 +77,7 @@ class AlunoControllerTest {
                 .andExpect(jsonPath("$.cpf").value(CPF))
                 .andExpect(jsonPath("$.instituicao.nome").value("Universidade Horizonte"))
                 .andExpect(jsonPath("$.curso.id").value(curso))
+                .andExpect(jsonPath("$.saldo").value(0))
                 .andExpect(jsonPath("$.senha").doesNotExist());
 
         mvc.perform(get("/alunos/" + CPF))
@@ -125,6 +126,29 @@ class AlunoControllerTest {
                 .andExpect(jsonPath("$.campos.idCurso").exists())
                 .andExpect(jsonPath("$.campos.login").exists())
                 .andExpect(jsonPath("$.campos.senha").exists());
+    }
+
+    @Test
+    @DisplayName("campo em branco recebe o aviso de obrigatório, não o de formato")
+    void campoEmBrancoAvisaObrigatoriedade() throws Exception {
+        enviar("""
+                {"nome": "", "email": "", "cpf": "", "rg": "", "endereco": "", "cnpjInstituicao": "",
+                 "idCurso": null, "login": "", "senha": ""}
+                """)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.campos.email").value("Informe o e-mail."))
+                .andExpect(jsonPath("$.campos.cpf").value("Informe o CPF."))
+                .andExpect(jsonPath("$.campos.cnpjInstituicao").value("Escolha a instituição."))
+                .andExpect(jsonPath("$.campos.login").value("Escolha um login."))
+                .andExpect(jsonPath("$.campos.senha").value("Crie uma senha."));
+    }
+
+    @Test
+    @DisplayName("recusa e-mail sem domínio completo, que não receberia os avisos")
+    void recusaEmailSemDominio() throws Exception {
+        enviar(cadastro(CPF, "ana@teste", "ana"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.campos.email").value("E-mail inválido."));
     }
 
     @Test
@@ -189,7 +213,8 @@ class AlunoControllerTest {
                 .andExpect(jsonPath("$.nome").value("Ana Souza Lima"))
                 .andExpect(jsonPath("$.email").value("ana.lima@email.com"))
                 .andExpect(jsonPath("$.login").value("ana.lima"))
-                .andExpect(jsonPath("$.endereco").value("Av. Brasil, 500"));
+                .andExpect(jsonPath("$.endereco").value("Av. Brasil, 500"))
+                .andExpect(jsonPath("$.saldo").value(0));
 
         assertThat(alunos.findById(CPF).orElseThrow().getSenha()).isEqualTo(antes);
     }

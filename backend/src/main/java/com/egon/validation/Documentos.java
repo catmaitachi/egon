@@ -6,7 +6,7 @@ import java.util.Locale;
  * Normalização e dígitos verificadores de CPF e CNPJ.
  *
  * <p>O banco guarda só os caracteres do documento, sem máscara (CHAR(11) e CHAR(14) no
- * diagrama relacional): a máscara é apresentação e fica no front-end.
+ * modelo de dados): a máscara é apresentação e fica no front-end.
  */
 public final class Documentos {
 

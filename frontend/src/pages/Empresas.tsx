@@ -21,7 +21,12 @@ export function Empresas() {
   const [removing, setRemoving] = useState<Empresa | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
-  const load = useCallback(() => api.empresas.listar().then(setList, (e: Error) => setLoadError(e.message)), [])
+  // A ordem do banco não segue as regras do português (acentos, maiúsculas); a da tela sim,
+  // e precisa ser a mesma antes e depois de uma edição.
+  const load = useCallback(
+    () => api.empresas.listar().then((l) => setList(l.sort(byName)), (e: Error) => setLoadError(e.message)),
+    [],
+  )
 
   useEffect(() => {
     load()

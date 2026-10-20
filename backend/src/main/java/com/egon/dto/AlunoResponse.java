@@ -2,7 +2,7 @@ package com.egon.dto;
 
 import com.egon.model.Aluno;
 
-/** O aluno como a API devolve: tudo menos a senha. */
+/** O aluno como a API devolve: tudo menos a senha. O saldo é só leitura: muda por transação e troca, não pelo cadastro. */
 public record AlunoResponse(
         String cpf,
         String nome,
@@ -11,7 +11,8 @@ public record AlunoResponse(
         String endereco,
         InstituicaoResponse instituicao,
         CursoResponse curso,
-        String login) {
+        String login,
+        int saldo) {
 
     public static AlunoResponse de(Aluno aluno) {
         return new AlunoResponse(
@@ -22,7 +23,8 @@ public record AlunoResponse(
                 aluno.getEndereco(),
                 InstituicaoResponse.de(aluno.getInstituicao()),
                 CursoResponse.de(aluno.getCurso()),
-                aluno.getLogin());
+                aluno.getLogin(),
+                aluno.getSaldo());
     }
 
 }

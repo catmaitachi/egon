@@ -1,19 +1,31 @@
 package com.egon.exception;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+/** Toda resposta de erro da API sai como {@link ErroResponse}, para o cliente tratar sempre pelo código. */
+@Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    /** Campo vazio pede "Informe o CPF.", e não a regra de formato que também falhou por estar vazio. */
+    private static final Set<String> OBRIGATORIEDADE = Set.of("NotBlank", "NotNull");
 
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ErroResponse> tratarApi(ApiException e) {
@@ -22,12 +34,16 @@ public class ApiExceptionHandler {
                 .body(new ErroResponse(e.getCodigo(), e.getMessage(), campos));
     }
 
-    /** Um aviso por campo, o primeiro: a tela tem espaço para uma linha embaixo de cada campo. */
+    /**
+     * Um aviso por campo, o primeiro: a tela tem espaço para uma linha embaixo de cada campo.
+     * O validador não garante a ordem das violações, então a de obrigatoriedade vem antes.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErroResponse tratarValidacao(MethodArgumentNotValidException e) {
         Map<String, String> campos = new LinkedHashMap<>();
-        e.getBindingResult().getFieldErrors()
+        e.getBindingResult().getFieldErrors().stream()
+                .sorted(Comparator.comparing((FieldError erro) -> !OBRIGATORIEDADE.contains(erro.getCode())))
                 .forEach(erro -> campos.putIfAbsent(erro.getField(), erro.getDefaultMessage()));
         return new ErroResponse("DADOS_INVALIDOS", "Confira os campos destacados.", campos);
     }
@@ -47,6 +63,31 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     ErroResponse tratarIntegridade() {
         return new ErroResponse("CONFLITO", "Os dados conflitam com um cadastro existente.");
+    }
+
+    /**
+     * O resto: erros do próprio Spring MVC (rota inexistente, método ou tipo de conteúdo não
+     * suportado), que já trazem o status certo, e falhas inesperadas, que viram 500. Sem isto
+     * eles sairiam no formato padrão do Spring, sem {@code codigo}.
+     */
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ErroResponse> tratarOutros(Exception e) {
+        if (e instanceof ErrorResponse erro) {
+            HttpStatusCode status = erro.getStatusCode();
+            return ResponseEntity.status(status).headers(erro.getHeaders()).body(paraStatus(status));
+        }
+        log.error("Erro não tratado", e);
+        return ResponseEntity.internalServerError()
+                .body(new ErroResponse("ERRO_INTERNO", "Algo deu errado no servidor. Tente de novo."));
+    }
+
+    private static ErroResponse paraStatus(HttpStatusCode status) {
+        return switch (status.value()) {
+            case 404 -> new ErroResponse("RECURSO_NAO_ENCONTRADO", "Este endereço não existe na API.");
+            case 405 -> new ErroResponse("METODO_NAO_PERMITIDO", "Este endereço não aceita este método.");
+            case 415 -> new ErroResponse("TIPO_NAO_SUPORTADO", "Envie o corpo da requisição como JSON.");
+            default -> new ErroResponse("REQUISICAO_INVALIDA", "A requisição não pôde ser atendida.");
+        };
     }
 
 }

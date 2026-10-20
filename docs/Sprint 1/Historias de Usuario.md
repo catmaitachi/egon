@@ -29,8 +29,8 @@
   - **quero** realizar meu cadastro informando meus dados pessoais e minha faculdade,
   - **para** poder receber moedas dos meus professores e resgatar vantagens cadastradas pelas empresas.
 - **Cenário Explicativo:**
-  - O aluno acessa a área de cadastro e preenche o formulário com: Nome completo, E-mail, CPF, RG, Endereço, Curso, além de definir seu Login e Senha. Para o campo de Instituição de Ensino, o aluno deve selecionar uma faculdade a partir de uma lista suspensa contendo as instituições já parceiras e pré-cadastradas no sistema.
-  - O sistema verifica se o CPF ou o e-mail informados já estão em uso. Havendo duplicidade, o cadastro é recusado com aviso específico. Se todos os dados forem válidos, a conta é criada com saldo inicial de 0 (zero) moedas, permitindo que o aluno faça login imediatamente.
+  - O aluno acessa a área de cadastro e preenche o formulário com: Nome completo, E-mail, CPF, RG e Endereço, além de definir seu Login e Senha. A Instituição de Ensino e o Curso são escolhidos em listas suspensas: a de instituições contém as faculdades já parceiras e pré-cadastradas no sistema.
+  - O sistema confere os dígitos verificadores do CPF e verifica se o CPF, o e-mail ou o login informados já estão em uso. O login não pode repetir o de nenhum outro usuário, seja aluno, professor ou empresa, porque a tela de autenticação é uma só (HU01). Havendo duplicidade, o cadastro é recusado com aviso específico. Se todos os dados forem válidos, a conta é criada com saldo inicial de 0 (zero) moedas, permitindo que o aluno faça login imediatamente.
 
 ---
 
@@ -41,7 +41,7 @@
   - **para** disponibilizar produtos, descontos e serviços em troca de moedas virtuais.
 - **Cenário Explicativo:**
   - A empresa parceira preenche o cadastro fornecendo Nome da Empresa, CNPJ, E-mail corporativo de contato, Login e Senha de acesso.
-  - O sistema valida o formato e a unicidade do CNPJ no banco de dados. Caso o CNPJ já conste como cadastrado, o sistema impede a criação da conta e exibe a mensagem de erro correspondente. Após a conclusão bem-sucedida, a empresa tem permissão para autenticar e começar a cadastrar as vantagens que deseja oferecer aos estudantes.
+  - O sistema valida o formato e os dígitos verificadores do CNPJ (numérico ou alfanumérico) e a sua unicidade no banco de dados. Caso o CNPJ já conste como cadastrado, o sistema impede a criação da conta e exibe a mensagem de erro correspondente. O e-mail e o login também não podem estar em uso, e o login não pode repetir o de nenhum outro usuário (HU01). Após a conclusão bem-sucedida, a empresa tem permissão para autenticar e começar a cadastrar as vantagens que deseja oferecer aos estudantes.
 
 ---
 
@@ -154,21 +154,21 @@
 
 ---
 
-## 4. Matriz de Rastreabilidade
+## 3. Matriz de Rastreabilidade
 
-Mapeamento entre as Histórias de Usuário, os casos de uso do [Diagrama de Casos de Uso](file:///home/luuspz/Wonderland/Projetos/egon/docs/Casos%20de%20Uso.png) e as entidades do [Diagrama de Classes](file:///home/luuspz/Wonderland/Projetos/egon/docs/Diagrama%20de%20Classe.png):
+Mapeamento entre as Histórias de Usuário, os casos de uso do [Diagrama de Casos de Uso](Casos%20de%20Uso.png) e as classes do [Diagrama de Classes](Diagrama%20de%20Classes.png). As tabelas correspondentes estão no [Modelo de Dados](../Sprint%202/Modelo%20de%20Dados.md).
 
 | ID | Título da História | Ator Principal | Caso de Uso Vinculado | Classes UML Envolvidas |
 | :---: | :--- | :--- | :--- | :--- |
 | **HU01** | Autenticação no Sistema | Usuário (Todos) | Realizar login | `Usuario`, `Aluno`, `Professor`, `Empresa` |
-| **HU02** | Cadastro de Aluno | Aluno | Realizar cadastro | `Aluno`, `Instituição`, `Usuario` |
-| **HU03** | Cadastro de Empresa | Empresa | Realizar cadstro de empresa | `Empresa`, `Usuario` |
-| **HU04** | Pré-cadastro de Professores | Instituição / Sistema | Pré-cadastro (Admin) | `Professor`, `Instituição`, `Usuario` |
-| **HU05** | Cota Semestral de Moedas | Sistema / Professor | Carga Semestral (Regra) | `Professor`, `Transação` |
-| **HU06** | Envio de Moedas por Mérito | Professor | Distribuir moedas | `Professor`, `Aluno`, `Transação` |
-| **HU07** | Notificação de Moedas Recebidas | Aluno | Distribuir moedas (Email) | `Notificação`, `Aluno`, `Transação` |
-| **HU08** | Cadastro de Vantagens | Empresa | Cadastrar vantagens | `Empresa`, `Vantagens` |
-| **HU09** | Consulta e Resgate de Vantagens | Aluno | Trocar moedas | `Aluno`, `Vantagens`, `Troca` |
-| **HU10** | Emissão e Envio do Cupom | Aluno e Empresa | Trocar moedas (Email) | `Cupom`, `Troca`, `Notificação`, `Empresa`, `Aluno` |
-| **HU11** | Extrato do Aluno | Aluno | Visualizar saldo / Visualizar transações | `Aluno`, `Transação`, `Troca` |
-| **HU12** | Extrato do Professor | Professor | Visualizar saldo / Visualizar transações | `Professor`, `Transação` |
+| **HU02** | Cadastro de Aluno | Aluno | Realizar cadastro | `Aluno`, `Instituicao`, `Curso`, `Usuario` |
+| **HU03** | Cadastro de Empresa | Empresa | Realizar cadastro de empresa | `Empresa`, `Usuario` |
+| **HU04** | Pré-cadastro de Professores | Instituição / Sistema | Sem caso de uso: carga feita pelo sistema a partir da lista da instituição | `Professor`, `Instituicao`, `Usuario` |
+| **HU05** | Cota Semestral de Moedas | Sistema / Professor | Sem caso de uso: regra executada pelo sistema a cada semestre | `Professor`, `CotaSemestral` |
+| **HU06** | Envio de Moedas por Mérito | Professor | Distribuir moedas | `Professor`, `Aluno`, `Transacao` |
+| **HU07** | Notificação de Moedas Recebidas | Aluno | Distribuir moedas (e-mail ao aluno) | `Notificacao`, `Aluno`, `Transacao` |
+| **HU08** | Cadastro de Vantagens | Empresa | Cadastrar vantagens | `Empresa`, `Vantagem` |
+| **HU09** | Consulta e Resgate de Vantagens | Aluno | Trocar moedas | `Aluno`, `Vantagem`, `Troca` |
+| **HU10** | Emissão e Envio do Cupom | Aluno e Empresa | Trocar moedas (e-mails com o cupom) | `Cupom`, `Troca`, `Notificacao`, `Empresa`, `Aluno` |
+| **HU11** | Extrato do Aluno | Aluno | Visualizar saldo / Visualizar transações | `Aluno`, `Transacao`, `Troca` |
+| **HU12** | Extrato do Professor | Professor | Visualizar saldo / Visualizar transações | `Professor`, `Transacao` |

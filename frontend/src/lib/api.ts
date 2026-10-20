@@ -13,6 +13,8 @@ export type Aluno = {
   instituicao: Instituicao
   curso: Curso
   login: string
+  // Só leitura: muda por transação e troca, não pelo cadastro. Começa em 0 (HU02).
+  saldo: number
 }
 
 export type AlunoCadastro = {
@@ -46,6 +48,9 @@ export class ApiError extends Error {
   }
 }
 
+const semConexao = () =>
+  new ApiError('SEM_CONEXAO', 'Não foi possível falar com o servidor. Confira se a API está rodando.')
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response
   try {
@@ -54,13 +59,16 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       headers: init?.body ? { 'Content-Type': 'application/json' } : undefined,
     })
   } catch {
-    throw new ApiError('SEM_CONEXAO', 'Não foi possível falar com o servidor. Confira se a API está rodando.')
+    throw semConexao()
   }
 
   if (!res.ok) {
     const body = await res.json().catch(() => null)
     if (body?.codigo) throw new ApiError(body.codigo, body.mensagem, body.campos)
-    throw new ApiError('SEM_CONEXAO', 'Não foi possível falar com o servidor. Confira se a API está rodando.')
+    // Sem corpo da API: 502-504 é o proxy sem conseguir chegar ao backend. Qualquer outro
+    // status veio de outro lugar e não deve ser confundido com servidor fora do ar.
+    if (res.status >= 502 && res.status <= 504) throw semConexao()
+    throw new ApiError('ERRO_HTTP', `O servidor respondeu com um erro inesperado (HTTP ${res.status}).`)
   }
   return res.status === 204 ? (undefined as T) : res.json()
 }

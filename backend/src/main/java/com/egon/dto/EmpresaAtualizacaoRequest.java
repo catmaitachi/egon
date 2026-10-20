@@ -17,7 +17,7 @@ public record EmpresaAtualizacaoRequest(
         @Size(max = 100, message = "Use até 100 caracteres.") String nome,
 
         @NotBlank(message = "Informe o e-mail de contato.")
-        @Email(message = "E-mail inválido.")
+        @Email(regexp = Campos.EMAIL_FORMATO, message = "E-mail inválido.")
         @Size(max = 100, message = "Use até 100 caracteres.") String email,
 
         @NotBlank(message = "Escolha um login.")

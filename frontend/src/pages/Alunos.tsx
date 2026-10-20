@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { PencilSimpleIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
-import { routes } from '../content'
+import { coins, routes } from '../content'
 import { api, type Aluno, type AlunoEdicao } from '../lib/api'
 import { maskCpf } from '../lib/documentos'
 import { useTitle } from '../lib/useTitle'
@@ -21,7 +21,12 @@ export function Alunos() {
   const [removing, setRemoving] = useState<Aluno | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
-  const load = useCallback(() => api.alunos.listar().then(setList, (e: Error) => setLoadError(e.message)), [])
+  // A ordem do banco não segue as regras do português (acentos, maiúsculas); a da tela sim,
+  // e precisa ser a mesma antes e depois de uma edição.
+  const load = useCallback(
+    () => api.alunos.listar().then((l) => setList(l.sort(byName)), (e: Error) => setLoadError(e.message)),
+    [],
+  )
 
   useEffect(() => {
     load()
@@ -81,6 +86,7 @@ export function Alunos() {
                   <Detail label="CPF">{maskCpf(a.cpf)}</Detail>
                   <Detail label="Instituição">{a.instituicao.nome}</Detail>
                   <Detail label="Curso">{a.curso.nome}</Detail>
+                  <Detail label="Saldo">{coins(a.saldo)}</Detail>
                 </dl>
               </div>
               <div className="flex gap-2">

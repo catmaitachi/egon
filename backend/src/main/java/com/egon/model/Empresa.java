@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Tabela EMPRESA do diagrama relacional, mais login e senha: a empresa entra no sistema
- * para cadastrar vantagens (HU01, HU03, HU08), e o diagrama não tinha onde guardá-los.
+ * Tabela EMPRESA do modelo de dados (docs/Sprint 2/Modelo de Dados.md), com login e senha:
+ * a empresa entra no sistema para cadastrar vantagens (HU01, HU03, HU08).
  */
 @Getter
 @Setter

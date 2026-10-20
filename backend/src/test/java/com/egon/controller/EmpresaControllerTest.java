@@ -85,6 +85,18 @@ class EmpresaControllerTest {
     }
 
     @Test
+    @DisplayName("campo em branco recebe o aviso de obrigatório, não o de formato")
+    void campoEmBrancoAvisaObrigatoriedade() throws Exception {
+        enviar("""
+                {"nome": "", "cnpj": "", "email": "", "login": "", "senha": ""}
+                """)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.campos.cnpj").value("Informe o CNPJ."))
+                .andExpect(jsonPath("$.campos.email").value("Informe o e-mail de contato."))
+                .andExpect(jsonPath("$.campos.login").value("Escolha um login."));
+    }
+
+    @Test
     @DisplayName("recusa CNPJ já cadastrado (HU03)")
     void recusaCnpjDuplicado() throws Exception {
         enviar(cadastro(CNPJ, "contato@livraria.com", "livraria")).andExpect(status().isCreated());

@@ -5,6 +5,12 @@ import java.util.Locale;
 /** Normalização dos campos de texto antes da validação: espaço sobrando não é erro de quem digitou. */
 final class Campos {
 
+    /**
+     * Somado ao {@code @Email}, que aceita "ana@teste": o domínio precisa de um ponto, já que
+     * o endereço vai receber os avisos de moedas e cupons (HU07, HU10).
+     */
+    static final String EMAIL_FORMATO = ".+@[^@]+\\.[^@.]+";
+
     private Campos() {
     }
 

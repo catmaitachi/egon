@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { brand, routes } from '../content'
+import { coins, routes } from '../content'
 import { api, type Aluno, type AlunoCadastro } from '../lib/api'
 import { useTitle } from '../lib/useTitle'
 import { AlunoForm } from '../forms/AlunoForm'
@@ -22,7 +22,7 @@ export function CadastroAluno() {
         {created ? (
           <SignupDone
             title="Conta criada"
-            text={`Tudo certo, ${created.nome.split(' ')[0]}. Sua conta começa com 0 ${brand.coin}s.`}
+            text={`Tudo certo, ${created.nome.split(' ')[0]}. Sua conta começa com ${coins(created.saldo)}.`}
             next={{ to: routes.students, label: 'Ver alunos' }}
           />
         ) : (

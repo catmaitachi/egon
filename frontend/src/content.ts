@@ -27,6 +27,11 @@ export const brand = {
   coin: 'Ego',
 }
 
+const count = new Intl.NumberFormat('pt-BR')
+
+// Quantia na moeda do site: "1 Ego", "0 Egos", "1.350 Egos".
+export const coins = (n: number) => `${count.format(n)} ${brand.coin}${n === 1 ? '' : 's'}`
+
 // Rotas das telas. O login ainda não existe; a landing já aponta para ele.
 export const routes = {
   signup: '/cadastro',
