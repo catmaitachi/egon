@@ -19,7 +19,8 @@ Os diagramas estão alinhados entre si e com as histórias de usuário; as diver
 ## Sprint 2 (Lab03S02)
 
 1. **[Diagrama de Componentes](Sprint%202/Diagrama%20de%20Componentes.png)**
-   - Front-end (telas de login, cadastro, gestão e painéis), back-end em camadas (controllers, services, repositories), banco relacional e os serviços externos de e-mail e de imagens.
+   - Front-end (telas de login, cadastro, gestão e painéis), back-end em camadas (controllers, services, repositories), banco relacional, o servidor de e-mail (opcional) e a pasta de fotos em disco local.
+   - Há também uma [versão reduzida](Sprint%202/diagrama-de-componentes-reduzido.png), mais abstrata (View, Controller e Model em blocos de gestão), para leitura rápida.
 
 2. **[Modelo Entidade-Relacionamento](Sprint%202/Mer.drawio.png)**
    - Modelo conceitual.
