@@ -1,11 +1,15 @@
 package com.egon.controller;
 
+import static com.egon.Logins.anonimo;
+import static com.egon.Logins.comoAdmin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,9 +27,10 @@ class ErrosDaApiTest {
     @Autowired MockMvc mvc;
 
     @Test
-    @DisplayName("rota inexistente responde 404 com código")
+    @DisplayName("rota inexistente responde 404 com código para quem está logado; sem login, 401 sem revelar nada")
     void rotaInexistente() throws Exception {
-        mvc.perform(get("/nada"))
+        mvc.perform(get("/nada")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/nada").with(comoAdmin()))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.codigo").value("RECURSO_NAO_ENCONTRADO"))
                 .andExpect(jsonPath("$.campos").isEmpty());
@@ -34,16 +39,26 @@ class ErrosDaApiTest {
     @Test
     @DisplayName("método não suportado responde 405 com código e os métodos aceitos")
     void metodoNaoSuportado() throws Exception {
-        mvc.perform(patch("/alunos/52998224725").contentType(MediaType.APPLICATION_JSON).content("{}"))
+        mvc.perform(patch("/alunos/" + UUID.randomUUID()).with(comoAdmin()).contentType(MediaType.APPLICATION_JSON).content("{}"))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(header().exists("Allow"))
                 .andExpect(jsonPath("$.codigo").value("METODO_NAO_PERMITIDO"));
     }
 
     @Test
+    @DisplayName("JSON quebrado responde 400 CORPO_INVALIDO, sem apontar campo")
+    void jsonQuebrado() throws Exception {
+        mvc.perform(post("/professores/" + UUID.randomUUID() + "/transacoes").with(comoAdmin()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"valor\": 1x}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("CORPO_INVALIDO"))
+                .andExpect(jsonPath("$.campos").isEmpty());
+    }
+
+    @Test
     @DisplayName("corpo que não é JSON responde 415 com código")
     void tipoNaoSuportado() throws Exception {
-        mvc.perform(post("/empresas").contentType(MediaType.TEXT_PLAIN).content("oi"))
+        mvc.perform(post("/empresas").with(anonimo()).contentType(MediaType.TEXT_PLAIN).content("oi"))
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(jsonPath("$.codigo").value("TIPO_NAO_SUPORTADO"));
     }

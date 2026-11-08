@@ -1,44 +1,45 @@
 import { useState } from 'react'
-import { coins, routes } from '../content'
-import { api, type Aluno, type AlunoCadastro } from '../lib/api'
+import { coinName, routes } from '../content'
+import { api, type Aluno } from '../lib/api'
 import { useTitle } from '../lib/useTitle'
+import { ActionLink } from '../components/controls'
+import { AppShell, PageTitle, Panel } from '../components/Shell'
 import { AlunoForm } from '../forms/AlunoForm'
-import { PageTitle, Panel, Shell } from '../components/Shell'
-import { SignupDone } from '../components/SignupDone'
+import { Done } from '../forms/parts'
 
-// HU02. A landing manda para cá pelo "Criar conta".
+// HU02, destino de "Criar conta" na landing. Concluído, a confirmação toma o lugar do formulário.
 export function CadastroAluno() {
   useTitle('Criar conta')
-  const [created, setCreated] = useState<Aluno | null>(null)
-
-  const create = async (dados: AlunoCadastro) => {
-    setCreated(await api.alunos.cadastrar(dados))
-    window.scrollTo({ top: 0 })
-  }
+  const [criado, setCriado] = useState<Aluno | null>(null)
 
   return (
-    <Shell>
-      <div className="mx-auto max-w-2xl">
-        {created ? (
-          <SignupDone
-            title="Conta criada"
-            text={`Tudo certo, ${created.nome.split(' ')[0]}. Sua conta começa com ${coins(created.saldo)}.`}
-            next={{ to: routes.students, label: 'Ver alunos' }}
+    <AppShell narrow>
+      {criado ? (
+        <Done
+          title="Conta criada"
+          text={`Tudo certo, ${criado.nome.split(' ')[0]}. Quando um professor da ${criado.instituicao.nome} te reconhecer, os ${coinName(2)} caem no seu saldo.`}
+        >
+          <ActionLink to={routes.login}>Entrar</ActionLink>
+          <ActionLink to="/" variant="outline">
+            Voltar ao início
+          </ActionLink>
+        </Done>
+      ) : (
+        <>
+          <PageTitle
+            center
+            title="Criar conta"
+            lead={`Com a conta criada, os professores da sua instituição já podem te enviar ${coinName(2)}.`}
           />
-        ) : (
-          <>
-            <PageTitle
-              center
-              eyebrow="Aluno"
-              title="Criar conta"
-              lead="Seus dados, sua instituição e um login. Os professores da sua instituição passam a poder te reconhecer."
+          <Panel className="mt-8">
+            <AlunoForm
+              label="Criar conta"
+              busyLabel="Criando conta…"
+              onSubmit={async (dados, cpf) => setCriado(await api.alunos.cadastrar({ ...dados, cpf }))}
             />
-            <Panel className="mt-10 px-6 py-8 md:px-10 md:py-10">
-              <AlunoForm submitLabel="Criar conta" onSubmit={create} />
-            </Panel>
-          </>
-        )}
-      </div>
-    </Shell>
+          </Panel>
+        </>
+      )}
+    </AppShell>
   )
 }

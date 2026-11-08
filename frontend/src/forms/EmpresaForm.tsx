@@ -1,68 +1,57 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
-import type { Empresa, EmpresaCadastro, EmpresaEdicao } from '../lib/api'
-import { maskCnpj } from '../lib/documentos'
-import { useFormSubmit } from '../lib/useFormSubmit'
-import { ActionButton } from '../components/controls'
-import { FieldGroup, FormAlert, TextField } from '../components/form'
+import type { Empresa, EmpresaEdicao } from '../lib/api'
+import { maskCnpj } from '../lib/format'
+import { FieldGroup, TextField } from '../components/fields'
+import { validarEmpresa } from './regras'
+import { FormActions } from './parts'
+import { minusculo, useCampos } from './useCampos'
 
-// Sem `initial`, é o cadastro (HU03). Com `initial`, é a edição: o CNPJ não aparece
-// (é a chave da empresa) e a senha vira opcional.
-type Props = { submitLabel: string; onCancel?: () => void } & (
-  | { initial?: undefined; onSubmit: (dados: EmpresaCadastro) => Promise<void> }
-  | { initial: Empresa; onSubmit: (dados: EmpresaEdicao) => Promise<void> }
-)
+type Props = {
+  // Sem empresa é o cadastro (HU03); com empresa é a edição: sem CNPJ (é a chave) e com senha opcional.
+  empresa?: Empresa
+  label: string
+  busyLabel: string
+  // O CNPJ vai separado porque só o cadastro o envia.
+  onSubmit: (dados: EmpresaEdicao, cnpj: string) => Promise<void>
+  onCancel?: () => void
+}
 
-type Values = Record<'nome' | 'cnpj' | 'email' | 'login' | 'senha', string>
-
-export function EmpresaForm(props: Props) {
-  const editing = props.initial !== undefined
-  const [values, setValues] = useState<Values>(() => ({
-    nome: props.initial?.nome ?? '',
+export function EmpresaForm({ empresa, label, busyLabel, onSubmit, onCancel }: Props) {
+  const edicao = empresa !== undefined
+  const { formRef, sending, alert, campo, enviar } = useCampos({
+    nome: empresa?.nome ?? '',
     cnpj: '',
-    email: props.initial?.email ?? '',
-    login: props.initial?.login ?? '',
+    email: empresa?.email ?? '',
+    login: empresa?.login ?? '',
     senha: '',
-  }))
-  const { formRef, sending, errors, alert, submit, clear } = useFormSubmit()
-
-  const bind = (name: keyof Values, mask?: (v: string) => string) => ({
-    name,
-    value: values[name],
-    error: errors[name],
-    onChange: (e: ChangeEvent<HTMLInputElement>) => {
-      const value = mask ? mask(e.target.value) : e.target.value
-      setValues((v) => ({ ...v, [name]: value }))
-      clear(name)
-    },
   })
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    const dados: EmpresaEdicao = { nome: values.nome, email: values.email, login: values.login, senha: values.senha }
-    submit(() => (props.initial ? props.onSubmit(dados) : props.onSubmit({ ...dados, cnpj: values.cnpj })))
-  }
+  const submit = enviar(
+    (v) => validarEmpresa(v, edicao),
+    (v) => onSubmit({ nome: v.nome, email: v.email, login: v.login, senha: v.senha }, v.cnpj),
+  )
 
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} className="grid gap-10">
-      {alert && <FormAlert>{alert}</FormAlert>}
-
-      <FieldGroup legend="Dados da empresa">
-        <TextField label="Nome da empresa" autoComplete="organization" className="md:col-span-2" {...bind('nome')} />
-        {!editing && (
+    <form ref={formRef} noValidate onSubmit={submit} className="grid gap-10 font-normal">
+      <FieldGroup legend="Empresa">
+        <TextField label="Nome da empresa" autoComplete="organization" className="md:col-span-2" {...campo('nome')} />
+        {!edicao && (
           <TextField
             label="CNPJ"
             autoComplete="off"
             autoCapitalize="characters"
+            spellCheck={false}
             placeholder="00.000.000/0000-00"
-            {...bind('cnpj', maskCnpj)}
+            hint="Pode ter letras: o CNPJ alfanumérico também vale."
+            {...campo('cnpj', maskCnpj)}
           />
         )}
         <TextField
           label="E-mail de contato"
           type="email"
           autoComplete="email"
-          className={editing ? 'md:col-span-2' : ''}
-          {...bind('email')}
+          spellCheck={false}
+          className={edicao ? 'md:col-span-2' : ''}
+          {...campo('email')}
         />
       </FieldGroup>
 
@@ -71,28 +60,20 @@ export function EmpresaForm(props: Props) {
           label="Login"
           autoComplete="username"
           autoCapitalize="none"
+          spellCheck={false}
           hint="Letras minúsculas, números, ponto, hífen ou sublinhado."
-          {...bind('login')}
+          {...campo('login', minusculo)}
         />
         <TextField
-          label={editing ? 'Nova senha' : 'Senha'}
+          label={edicao ? 'Nova senha' : 'Senha'}
           type="password"
           autoComplete="new-password"
-          hint={editing ? 'Deixe em branco para manter a atual.' : 'Pelo menos 8 caracteres.'}
-          {...bind('senha')}
+          hint={edicao ? 'Deixe em branco para manter a atual.' : 'De 8 a 72 caracteres.'}
+          {...campo('senha')}
         />
       </FieldGroup>
 
-      <div className="flex flex-wrap justify-end gap-3">
-        {props.onCancel && (
-          <ActionButton variant="outline" onClick={props.onCancel}>
-            Cancelar
-          </ActionButton>
-        )}
-        <ActionButton type="submit" disabled={sending}>
-          {sending ? 'Enviando…' : props.submitLabel}
-        </ActionButton>
-      </div>
+      <FormActions alert={alert} sending={sending} label={label} busyLabel={busyLabel} onCancel={onCancel} />
     </form>
   )
 }

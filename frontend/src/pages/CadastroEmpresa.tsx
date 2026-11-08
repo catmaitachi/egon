@@ -1,44 +1,41 @@
 import { useState } from 'react'
-import { brand, routes } from '../content'
-import { api, type Empresa, type EmpresaCadastro } from '../lib/api'
+import { brand, coinName } from '../content'
+import { api, type Empresa } from '../lib/api'
 import { useTitle } from '../lib/useTitle'
+import { ActionLink } from '../components/controls'
+import { AppShell, PageTitle, Panel } from '../components/Shell'
 import { EmpresaForm } from '../forms/EmpresaForm'
-import { PageTitle, Panel, Shell } from '../components/Shell'
-import { SignupDone } from '../components/SignupDone'
+import { Done } from '../forms/parts'
 
-// HU03. A landing manda para cá pelo "Cadastrar empresa".
+// HU03, destino de "Cadastrar empresa" na landing. Concluído, a confirmação toma o lugar do formulário.
 export function CadastroEmpresa() {
   useTitle('Cadastrar empresa')
-  const [created, setCreated] = useState<Empresa | null>(null)
-
-  const create = async (dados: EmpresaCadastro) => {
-    setCreated(await api.empresas.cadastrar(dados))
-    window.scrollTo({ top: 0 })
-  }
+  const [criada, setCriada] = useState<Empresa | null>(null)
 
   return (
-    <Shell>
-      <div className="mx-auto max-w-2xl">
-        {created ? (
-          <SignupDone
-            title="Empresa cadastrada"
-            text={`${created.nome} já faz parte do ${brand.name}. O próximo passo é publicar vantagens para os alunos.`}
-            next={{ to: routes.partners, label: 'Ver empresas' }}
+    <AppShell narrow>
+      {criada ? (
+        <Done title="Empresa cadastrada" text={`Tudo certo. ${criada.nome} já faz parte do ${brand.name}.`}>
+          <ActionLink to="/" variant="outline">
+            Voltar ao início
+          </ActionLink>
+        </Done>
+      ) : (
+        <>
+          <PageTitle
+            center
+            title="Cadastrar empresa"
+            lead={`Ofereça vantagens aos alunos em troca de ${coinName(2)}.`}
           />
-        ) : (
-          <>
-            <PageTitle
-              center
-              eyebrow="Empresa parceira"
-              title="Cadastrar empresa"
-              lead={`Com a conta criada, sua empresa publica vantagens que os alunos trocam por ${brand.coin}s.`}
+          <Panel className="mt-8">
+            <EmpresaForm
+              label="Cadastrar empresa"
+              busyLabel="Cadastrando…"
+              onSubmit={async (dados, cnpj) => setCriada(await api.empresas.cadastrar({ ...dados, cnpj }))}
             />
-            <Panel className="mt-10 px-6 py-8 md:px-10 md:py-10">
-              <EmpresaForm submitLabel="Cadastrar empresa" onSubmit={create} />
-            </Panel>
-          </>
-        )}
-      </div>
-    </Shell>
+          </Panel>
+        </>
+      )}
+    </AppShell>
   )
 }

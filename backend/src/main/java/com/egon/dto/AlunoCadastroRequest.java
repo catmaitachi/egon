@@ -1,7 +1,8 @@
 package com.egon.dto;
 
+import java.util.UUID;
+
 import com.egon.model.Usuario;
-import com.egon.validation.Cnpj;
 import com.egon.validation.Cpf;
 import com.egon.validation.Documentos;
 import com.egon.validation.Senha;
@@ -29,7 +30,7 @@ public record AlunoCadastroRequest(
         @NotBlank(message = "Informe o endereço.")
         @Size(max = 255, message = "Use até 255 caracteres.") String endereco,
 
-        @NotBlank(message = "Escolha a instituição.") @Cnpj String cnpjInstituicao,
+        @NotNull(message = "Escolha a instituição.") UUID idInstituicao,
 
         @NotNull(message = "Escolha o curso.") Integer idCurso,
 
@@ -45,7 +46,6 @@ public record AlunoCadastroRequest(
         cpf = Documentos.normalizarCpf(cpf);
         rg = Campos.aparar(rg);
         endereco = Campos.aparar(endereco);
-        cnpjInstituicao = Documentos.normalizarCnpj(cnpjInstituicao);
         login = Campos.minusculo(login);
     }
 

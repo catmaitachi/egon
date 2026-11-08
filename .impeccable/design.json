@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-04T12:00:00Z",
+  "title": "Design System: Egon",
+  "extensions": {
+    "colorMeta": {
+      "night": { "role": "neutral", "displayName": "Noite", "canonical": "#0b0a0b", "tonalRamp": ["oklch(15% 0.003 330)", "oklch(25% 0.003 330)", "oklch(35% 0.003 330)", "oklch(45% 0.003 330)", "oklch(57% 0.003 330)", "oklch(70% 0.003 330)", "oklch(83% 0.003 330)", "oklch(95% 0.003 330)"] },
+      "coal": { "role": "neutral", "displayName": "Carvão", "canonical": "#161415", "tonalRamp": ["oklch(15% 0.004 340)", "oklch(25% 0.004 340)", "oklch(35% 0.004 340)", "oklch(45% 0.004 340)", "oklch(57% 0.004 340)", "oklch(70% 0.004 340)", "oklch(83% 0.004 340)", "oklch(95% 0.004 340)"] },
+      "snow": { "role": "neutral", "displayName": "Neve", "canonical": "#fbf9fa", "tonalRamp": ["oklch(15% 0.003 340)", "oklch(25% 0.003 340)", "oklch(35% 0.003 340)", "oklch(45% 0.003 340)", "oklch(57% 0.003 340)", "oklch(70% 0.003 340)", "oklch(83% 0.003 340)", "oklch(98% 0.003 340)"] },
+      "ink-soft": { "role": "neutral", "displayName": "Tinta Suave", "canonical": "color-mix(in oklab, #fbf9fa 72%, #0b0a0b)" },
+      "line": { "role": "neutral", "displayName": "Linha", "canonical": "color-mix(in oklab, #fbf9fa 14%, transparent)" },
+      "accent": { "role": "primary", "displayName": "Ego Violeta", "canonical": "#6a4cff", "tonalRamp": ["oklch(15% 0.06 285)", "oklch(25% 0.12 285)", "oklch(35% 0.18 285)", "oklch(45% 0.22 285)", "oklch(55% 0.24 285)", "oklch(68% 0.18 285)", "oklch(82% 0.1 285)", "oklch(95% 0.03 285)"] },
+      "accent-deep": { "role": "primary", "displayName": "Violeta Fundo", "canonical": "#3f25c9" },
+      "danger": { "role": "tertiary", "displayName": "Alerta", "canonical": "#ff6b6b", "tonalRamp": ["oklch(15% 0.05 22)", "oklch(25% 0.09 22)", "oklch(35% 0.13 22)", "oklch(45% 0.16 22)", "oklch(57% 0.18 22)", "oklch(70% 0.17 22)", "oklch(83% 0.09 22)", "oklch(95% 0.03 22)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Só o título do hero." },
+      "headline": { "displayName": "Headline", "purpose": "Letreiro de seção da landing." },
+      "title": { "displayName": "Title", "purpose": "Título de página nas telas de app." },
+      "subtitle": { "displayName": "Subtitle", "purpose": "Título de painel, etapa e vantagem." },
+      "body": { "displayName": "Body", "purpose": "Texto corrido e apoio." },
+      "data": { "displayName": "Data", "purpose": "Campos, linhas de lista, extrato." },
+      "label": { "displayName": "Label", "purpose": "Rótulos de campo, abas, cabeçalhos." },
+      "button": { "displayName": "Button", "purpose": "Botões e links de ação." }
+    },
+    "shadows": [
+      { "name": "ego-halo", "value": "0 0 0 4px color-mix(in oklab, #6a4cff 22%, transparent), 0 0 28px -2px #6a4cff", "purpose": "Moeda em movimento ou recém-chegada." },
+      { "name": "stop-pulse", "value": "0 0 0 1.5px #6a4cff, 0 0 26px -2px #6a4cff", "purpose": "Parada da trilha quando um Ego passa; apaga até transparente." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Curva padrão de todo o sistema." },
+      { "name": "duration-state", "value": "300ms", "purpose": "Cor e fundo de controles no hover." },
+      { "name": "duration-app", "value": "150ms-250ms", "purpose": "Transições nas telas de app (aviso, saldo)." },
+      { "name": "duration-entrance", "value": "800ms-900ms", "purpose": "Entrada do hero da landing; nunca nas telas de app." },
+      { "name": "spring-tab", "value": "stiffness 380, damping 32", "purpose": "Pílula da aba selecionada deslizando." },
+      { "name": "flow-cycle", "value": "4.5s linear infinite", "purpose": "Egos correndo pela trilha da landing." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal da tela; o único roxo clicável.",
+      "html": "<button class=\"ds-btn-primary\">CRIAR CONTA <svg width=\"18\" height=\"18\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M224.49 136.49l-72 72a12 12 0 0 1-17-17L187 140H40a12 12 0 0 1 0-24h147l-51.49-51.51a12 12 0 0 1 17-17l72 72a12 12 0 0 1-.02 17z\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 28px; border: 0; border-radius: 9999px; background: var(--accent, #6a4cff); color: var(--snow, #fbf9fa); font-family: Tomorrow, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.025em; text-transform: uppercase; cursor: pointer; transition: background-color 300ms; } .ds-btn-primary:hover { background: var(--accent-deep, #3f25c9); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #fbf9fa; outline-offset: 4px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Ação secundária; acende para branco no hover.",
+      "html": "<button class=\"ds-btn-outline\">ENTRAR</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; height: 52px; padding: 0 28px; border: 0; border-radius: 9999px; background: rgba(11,10,11,0.5); color: #fbf9fa; box-shadow: inset 0 0 0 1px rgba(251,249,250,0.4); font-family: Tomorrow, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.025em; text-transform: uppercase; cursor: pointer; transition: background-color 300ms, color 300ms, box-shadow 300ms; } .ds-btn-outline:hover { background: #fbf9fa; color: #0b0a0b; box-shadow: inset 0 0 0 1px #fbf9fa; } .ds-btn-outline:focus-visible { outline: 2px solid #fbf9fa; outline-offset: 4px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Só para excluir, dentro da confirmação.",
+      "html": "<button class=\"ds-btn-danger\">EXCLUIR</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; height: 44px; padding: 0 24px; border: 0; border-radius: 9999px; background: transparent; color: #ff6b6b; box-shadow: inset 0 0 0 1px rgba(255,107,107,0.6); font-family: Tomorrow, sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.025em; text-transform: uppercase; cursor: pointer; transition: background-color 300ms, color 300ms; } .ds-btn-danger:hover { background: #ff6b6b; color: #0b0a0b; } .ds-btn-danger:focus-visible { outline: 2px solid #fbf9fa; outline-offset: 4px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo em pílula com rótulo em caixa alta e erro ligado por aria-describedby.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">CPF</span><input class=\"ds-input\" placeholder=\"000.000.000-00\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; max-width: 320px; } .ds-field-label { font-family: Tomorrow, sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.08em; color: #b8b6b7; } .ds-input { height: 48px; padding: 0 20px; border: 0; border-radius: 9999px; background: #0b0a0b; color: #fbf9fa; font-family: 'Chakra Petch', sans-serif; font-size: 16px; box-shadow: inset 0 0 0 1px rgba(251,249,250,0.4); transition: box-shadow 200ms; outline: none; } .ds-input::placeholder { color: rgba(251,249,250,0.5); } .ds-input:hover { box-shadow: inset 0 0 0 1px rgba(251,249,250,0.6); } .ds-input:focus { box-shadow: inset 0 0 0 2px #fbf9fa; }"
+    },
+    {
+      "name": "Profile Tabs",
+      "kind": "nav",
+      "refersTo": "tab-selected",
+      "description": "Trilho de carvão com pílula branca no item selecionado.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" aria-selected=\"true\">ALUNO</button><button class=\"ds-tab\">PROFESSOR</button><button class=\"ds-tab\">EMPRESA</button></div>",
+      "css": ".ds-tabs { display: inline-flex; padding: 6px; border-radius: 9999px; background: #161415; box-shadow: inset 0 0 0 1px rgba(251,249,250,0.14); } .ds-tab { height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: transparent; color: #b8b6b7; font-family: Tomorrow, sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.025em; cursor: pointer; transition: color 300ms; } .ds-tab:hover { color: #fbf9fa; } .ds-tab[aria-selected=\"true\"] { background: #fbf9fa; color: #0b0a0b; } .ds-tab:focus-visible { outline: 2px solid #fbf9fa; outline-offset: 4px; }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Única superfície: carvão, 1px de linha, 20px de canto.",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel-title\">EXTRATO</h2><p class=\"ds-panel-text\">Os Egos que você recebe aparecem aqui.</p></section>",
+      "css": ".ds-panel { max-width: 420px; padding: 28px; border-radius: 20px; background: #161415; color: #fbf9fa; box-shadow: inset 0 0 0 1px rgba(251,249,250,0.14); } .ds-panel-title { margin: 0; font-family: Tomorrow, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; } .ds-panel-text { margin: 8px 0 0; font-family: 'Chakra Petch', sans-serif; font-weight: 300; color: #b8b6b7; }"
+    },
+    {
+      "name": "Ego Coin and Price",
+      "kind": "chip",
+      "refersTo": "price-chip",
+      "description": "A moeda roxa colada ao valor; o chip branco de preço.",
+      "html": "<span class=\"ds-price\"><span class=\"ds-coin\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><ellipse cx=\"128\" cy=\"128\" rx=\"72\" ry=\"104\"/></svg></span>120</span>",
+      "css": ".ds-price { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px 4px 4px; border-radius: 9999px; background: #fbf9fa; color: #0b0a0b; font-family: Tomorrow, sans-serif; font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; } .ds-coin { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 9999px; background: #6a4cff; color: #fbf9fa; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Letreiro Aceso",
+    "overview": "O Egon é uma sala escura onde só uma coisa acende: o Ego. Tudo é preto, carvão e branco; o roxo azulado aparece apenas onde o aluno deve olhar ou clicar (a ação principal, a palavra Ego, a moeda). Os títulos são letreiros: Tomorrow pesada, em caixa alta, que na landing desce contra a rolagem e acende letra a letra. O texto corrido é Chakra Petch fina, técnica sem ser fria.\n\nA landing (modo Persuade) é a referência visual e não muda: seções de tela cheia, uma única cena de fundo (ondas de pontos no hero), superfícies de carvão com contorno de 1px e cantos de 20px, controles em pílula. As telas de app (modo Operate) falam a mesma língua com o volume baixo: mesmos tokens, mesmas pílulas, mesmos contornos, sem cena de fundo, sem entrada coreografada, com densidade e estados completos. A marca vive nos detalhes: a moeda no saldo, o roxo só no botão que a pessoa veio apertar.",
+    "keyCharacteristics": [
+      "Preto e branco por padrão; uma cor, com função.",
+      "Títulos em caixa alta pesada; texto fino e legível.",
+      "Pílula para tudo que se aperta ou preenche; 20px para tudo que contém.",
+      "Profundidade por camada tonal (preto, carvão) e contorno de 1px, nunca por sombra.",
+      "Movimento ligado a um estado ou à rolagem; prefers-reduced-motion sempre respeitado.",
+      "Só modo escuro."
+    ],
+    "rules": [
+      { "name": "A Regra do Único Acento", "body": "Numa tela há no máximo um botão roxo. O roxo nunca enfeita: se não é ação principal, Ego ou moeda, é preto, branco ou cinza.", "section": "colors" },
+      { "name": "A Regra do Sinal, Não da Cor", "body": "Entrada e saída de Egos se distinguem por sinal (+ / −) e ícone de direção, nunca por verde e vermelho. O vermelho é só erro.", "section": "colors" },
+      { "name": "A Regra do Letreiro", "body": "Título é Tomorrow em caixa alta, com tracking negativo (-0.02em) nos grandes. Texto corrido nunca vai em caixa alta.", "section": "typography" },
+      { "name": "A Regra do Algarismo Alinhado", "body": "Todo número que se compara com outro (saldo, valor de movimento, preço) usa tabular-nums.", "section": "typography" },
+      { "name": "A Regra do Plano", "body": "Superfície não flutua. Se precisa se separar do fundo, ganha carvão e contorno de 1px; nunca sombra.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar Ego Violeta (#6a4cff) só na ação principal, na palavra Ego/Egos e na moeda; no máximo um botão roxo por tela.",
+      "Do pôr título em Tomorrow 800 caixa alta com -0.02em; texto em Chakra Petch 300 (prosa) ou 400 (dados).",
+      "Do usar pílula em controles e 20px em superfícies, contorno de 1px em Linha.",
+      "Do mostrar toda quantia com a moeda e coins() de content.ts (\"1 Ego\", \"1.350 Egos\"); o nome da moeda só existe lá.",
+      "Do dar a toda tela de app os estados carregando, vazio, erro e cheio, foco visível e funcionamento a 375px.",
+      "Do declarar o raio de toda superfície focável (classe rounded-*): o foco global aplica raio de pílula a quem não declarar.",
+      "Do respeitar prefers-reduced-motion: o fluxo vira uma moeda parada, o letreiro aparece aceso, o esqueleto para de pulsar.",
+      "Do manter transições de app entre 150ms e 300ms com a curva expo (cubic-bezier(0.16, 1, 0.3, 1))."
+    ],
+    "donts": [
+      "Don't criar barra de navegação na landing, fundo colorido contínuo ou cards de três colunas iguais.",
+      "Don't pôr rótulo pequeno acima do título (eyebrow); o título se basta.",
+      "Don't usar verde e vermelho para entrada e saída de Egos; use sinal e ícone.",
+      "Don't usar sombra para separar superfícies, nem painel dentro de painel.",
+      "Don't repetir a coreografia de entrada da landing nas telas de app; app carrega direto na tarefa.",
+      "Don't trazer outra biblioteca de ícones, emoji ou glifo no lugar de ícone Phosphor.",
+      "Don't criar tema claro."
+    ]
+  }
+}

@@ -6,8 +6,8 @@ import java.util.Locale;
 final class Campos {
 
     /**
-     * Somado ao {@code @Email}, que aceita "ana@teste": o domínio precisa de um ponto, já que
-     * o endereço vai receber os avisos de moedas e cupons (HU07, HU10).
+     * Somado ao {@code @Email}, que aceita "ana@teste": o domínio precisa de um ponto, senão o
+     * e-mail de contato do cadastro não chega a lugar nenhum.
      */
     static final String EMAIL_FORMATO = ".+@[^@]+\\.[^@.]+";
 

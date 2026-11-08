@@ -10,4 +10,8 @@ public interface CursoRepository extends JpaRepository<Curso, Integer> {
 
     List<Curso> findAllByOrderByNomeAsc();
 
+    boolean existsByNomeIgnoreCase(String nome);
+
+    boolean existsByNomeIgnoreCaseAndIdNot(String nome, Integer id);
+
 }

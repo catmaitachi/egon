@@ -26,6 +26,7 @@ class ListasDoCadastroTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].nome").value("Centro Universitário Vale Verde"))
+                .andExpect(jsonPath("$[0].id").exists())
                 .andExpect(jsonPath("$[0].cnpj").value("45218073000192"));
     }
 

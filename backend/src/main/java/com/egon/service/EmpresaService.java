@@ -1,6 +1,7 @@
 package com.egon.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import com.egon.exception.ApiException;
 import com.egon.model.Empresa;
 import com.egon.repository.EmpresaRepository;
 import com.egon.repository.UsuarioRepository;
-import com.egon.validation.Documentos;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class EmpresaService {
 
     private final EmpresaRepository empresas;
+    private final VantagemService vantagens;
     private final UsuarioRepository usuarios;
     private final PasswordEncoder senhas;
 
@@ -31,14 +32,14 @@ public class EmpresaService {
     }
 
     @Transactional(readOnly = true)
-    public EmpresaResponse buscar(String cnpj) {
-        return EmpresaResponse.de(encontrar(cnpj));
+    public EmpresaResponse buscar(UUID id) {
+        return EmpresaResponse.de(encontrar(id));
     }
 
     /** HU03: CNPJ repetido impede o cadastro. E-mail e login também precisam ser únicos. */
     @Transactional
     public EmpresaResponse cadastrar(EmpresaCadastroRequest requisicao) {
-        if (empresas.existsById(requisicao.cnpj())) {
+        if (empresas.existsByCnpj(requisicao.cnpj())) {
             throw ApiException.cnpjEmUso();
         }
         if (empresas.existsByEmail(requisicao.email())) {
@@ -58,10 +59,10 @@ public class EmpresaService {
     }
 
     @Transactional
-    public EmpresaResponse atualizar(String cnpj, EmpresaAtualizacaoRequest requisicao) {
-        Empresa empresa = encontrar(cnpj);
+    public EmpresaResponse atualizar(UUID id, EmpresaAtualizacaoRequest requisicao) {
+        Empresa empresa = encontrar(id);
 
-        if (empresas.existsByEmailAndCnpjNot(requisicao.email(), empresa.getCnpj())) {
+        if (empresas.existsByEmailAndIdNot(requisicao.email(), empresa.getId())) {
             throw ApiException.emailEmUso();
         }
         if (!requisicao.login().equals(empresa.getLogin()) && usuarios.existsByLogin(requisicao.login())) {
@@ -78,13 +79,14 @@ public class EmpresaService {
     }
 
     @Transactional
-    public void excluir(String cnpj) {
-        empresas.delete(encontrar(cnpj));
+    public void excluir(UUID id) {
+        Empresa empresa = encontrar(id);
+        vantagens.excluirTodas(id);
+        empresas.delete(empresa);
     }
 
-    private Empresa encontrar(String cnpj) {
-        return empresas.findById(Documentos.normalizarCnpj(cnpj))
-                .orElseThrow(ApiException::empresaNaoEncontrada);
+    private Empresa encontrar(UUID id) {
+        return empresas.findById(id).orElseThrow(ApiException::empresaNaoEncontrada);
     }
 
 }

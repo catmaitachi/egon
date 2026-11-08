@@ -16,7 +16,7 @@ Primário: aluno de graduação de uma instituição conveniada, que chega pela 
 
 ## Product Purpose
 
-Sistema de moeda estudantil. Professores reconhecem mérito (participação, dedicação, comportamento) transferindo moedas com uma mensagem obrigatória. Alunos acumulam saldo e trocam por vantagens cadastradas por empresas parceiras, recebendo um cupom por e-mail. Sucesso na landing: o aluno entende o ciclo e cria conta.
+Sistema de moeda estudantil. Professores reconhecem mérito (participação, dedicação, comportamento) transferindo moedas com uma mensagem obrigatória; alunos podem repassar parte delas a colegas, sob as regras do professor de origem. Alunos acumulam saldo e trocam por vantagens cadastradas por empresas parceiras, recebendo um cupom por aviso no app. Sucesso na landing: o aluno entende o ciclo e cria conta.
 
 ## Positioning
 
@@ -25,14 +25,14 @@ A moeda só nasce do reconhecimento de um professor, sempre com justificativa es
 ## Operating Context
 
 - Professor recebe 1.000 moedas por semestre; saldo não usado acumula.
-- Toda transferência gera e-mail ao aluno com professor, valor, data e mensagem.
-- Resgate debita o saldo, gera cupom com código e envia e-mail ao aluno e à empresa; a troca é presencial, com conferência do código.
+- Toda transferência gera, ao vivo, um aviso no app para o aluno, com professor, valor, data e mensagem, e uma confirmação para o professor.
+- Resgate debita o saldo, gera cupom com código e avisa no app o aluno e a empresa; a troca é presencial, com conferência do código.
 - Instituições fornecem a lista de professores e departamentos.
 
 ## Capabilities and Constraints
 
 - Cadastro público só para alunos (com CPF, RG, curso e instituição de uma lista) e empresas (CNPJ).
-- Login único para aluno, professor e empresa.
+- Login único para aluno, professor e empresa (HU01, ainda não feito: hoje a tela Entrar escolhe o perfil sem senha).
 - Nome do produto: **Egon**. Nome da moeda: **Ego** (plural "Egos"). Ambos ficam em `frontend/src/content.ts`. No logo, a moeda ocupa o lugar do "O".
 
 ## Evidence on Hand

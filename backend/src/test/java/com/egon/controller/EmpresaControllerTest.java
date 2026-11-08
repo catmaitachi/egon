@@ -1,5 +1,8 @@
 package com.egon.controller;
 
+import static com.egon.Logins.anonimo;
+import static com.egon.Logins.comoAdmin;
+import static com.egon.Logins.comoEmpresa;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,6 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.egon.Dados;
 import com.egon.repository.CursoRepository;
+import com.egon.repository.InstituicaoRepository;
 import com.egon.repository.EmpresaRepository;
 
 /** O CRUD de empresa parceira pela API. Cada teste roda numa transação desfeita no fim. */
@@ -33,6 +40,7 @@ class EmpresaControllerTest {
     @Autowired MockMvc mvc;
     @Autowired EmpresaRepository empresas;
     @Autowired CursoRepository cursos;
+    @Autowired InstituicaoRepository instituicoes;
     @Autowired PasswordEncoder senhas;
 
     private static String cadastro(String cnpj, String email, String login) {
@@ -42,27 +50,33 @@ class EmpresaControllerTest {
     }
 
     private ResultActions enviar(String corpo) throws Exception {
-        return mvc.perform(post("/empresas").contentType(MediaType.APPLICATION_JSON).content(corpo));
+        return mvc.perform(post("/empresas").with(anonimo()).contentType(MediaType.APPLICATION_JSON).content(corpo));
+    }
+
+    private UUID criar() throws Exception {
+        return Dados.id(enviar(cadastro(CNPJ, "contato@livraria.com", "livraria")).andExpect(status().isCreated()).andReturn());
     }
 
     @Test
-    @DisplayName("cadastra, busca e lista a empresa sem nunca devolver a senha")
+    @DisplayName("cadastra, busca e lista a empresa com id próprio, sem nunca devolver a senha")
     void cadastraBuscaELista() throws Exception {
-        enviar(cadastro(CNPJ, "contato@livraria.com", "livraria"))
+        UUID id = Dados.id(enviar(cadastro(CNPJ, "contato@livraria.com", "livraria"))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.cnpj").value(CNPJ))
-                .andExpect(jsonPath("$.senha").doesNotExist());
+                .andExpect(jsonPath("$.senha").doesNotExist())
+                .andReturn());
 
-        mvc.perform(get("/empresas/" + CNPJ))
+        mvc.perform(get("/empresas/" + id).with(comoEmpresa(id)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value("Livraria Central"));
 
-        mvc.perform(get("/empresas"))
+        mvc.perform(get("/empresas").with(comoAdmin()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].cnpj").value(CNPJ))
+                .andExpect(jsonPath("$[0].id").value(id.toString()))
                 .andExpect(jsonPath("$[0].senha").doesNotExist());
 
-        String gravada = empresas.findById(CNPJ).orElseThrow().getSenha();
+        String gravada = empresas.findById(id).orElseThrow().getSenha();
         assertThat(senhas.matches("segredo123", gravada)).isTrue();
     }
 
@@ -72,8 +86,6 @@ class EmpresaControllerTest {
         enviar(cadastro("12.abc.345/01de-35", "contato@livraria.com", "livraria"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.cnpj").value("12ABC34501DE35"));
-
-        mvc.perform(get("/empresas/12ABC34501DE35")).andExpect(status().isOk());
     }
 
     @Test
@@ -99,7 +111,7 @@ class EmpresaControllerTest {
     @Test
     @DisplayName("recusa CNPJ já cadastrado (HU03)")
     void recusaCnpjDuplicado() throws Exception {
-        enviar(cadastro(CNPJ, "contato@livraria.com", "livraria")).andExpect(status().isCreated());
+        criar();
 
         enviar(cadastro("45.218.073/0001-92", "outro@livraria.com", "outra"))
                 .andExpect(status().isConflict())
@@ -110,12 +122,9 @@ class EmpresaControllerTest {
     @Test
     @DisplayName("recusa login que já pertence a um aluno: o login é único no sistema todo")
     void recusaLoginDeAluno() throws Exception {
-        int curso = cursos.findAllByOrderByNomeAsc().getFirst().getId();
-        mvc.perform(post("/alunos").contentType(MediaType.APPLICATION_JSON).content("""
-                {"nome": "Ana Souza", "email": "ana@email.com", "cpf": "52998224725", "rg": "123",
-                 "endereco": "Rua A, 1", "cnpjInstituicao": "11222333000181", "idCurso": %d,
-                 "login": "ana", "senha": "segredo123"}
-                """.formatted(curso))).andExpect(status().isCreated());
+        Dados.cadastrarAluno(mvc, "Ana Souza", Dados.ANA, "ana",
+                instituicoes.findByCnpj(Dados.HORIZONTE).orElseThrow().getId(),
+                cursos.findAllByOrderByNomeAsc().getFirst().getId());
 
         enviar(cadastro(CNPJ, "contato@livraria.com", "ana"))
                 .andExpect(status().isConflict())
@@ -125,28 +134,29 @@ class EmpresaControllerTest {
     @Test
     @DisplayName("edita nome, e-mail e login e mantém a senha quando ela vem em branco")
     void editaMantendoSenha() throws Exception {
-        enviar(cadastro(CNPJ, "contato@livraria.com", "livraria")).andExpect(status().isCreated());
-        String antes = empresas.findById(CNPJ).orElseThrow().getSenha();
+        UUID id = criar();
+        String antes = empresas.findById(id).orElseThrow().getSenha();
 
-        mvc.perform(put("/empresas/" + CNPJ).contentType(MediaType.APPLICATION_JSON).content("""
+        mvc.perform(put("/empresas/" + id).with(comoEmpresa(id)).contentType(MediaType.APPLICATION_JSON).content("""
                 {"nome": "Livraria Central Ltda", "email": "vendas@livraria.com", "login": "livraria.central", "senha": ""}
                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value("Livraria Central Ltda"))
                 .andExpect(jsonPath("$.email").value("vendas@livraria.com"))
-                .andExpect(jsonPath("$.login").value("livraria.central"));
+                .andExpect(jsonPath("$.login").value("livraria.central"))
+                .andExpect(jsonPath("$.cnpj").value(CNPJ));
 
-        assertThat(empresas.findById(CNPJ).orElseThrow().getSenha()).isEqualTo(antes);
+        assertThat(empresas.findById(id).orElseThrow().getSenha()).isEqualTo(antes);
     }
 
     @Test
     @DisplayName("exclui a empresa, que deixa de ser encontrada")
     void exclui() throws Exception {
-        enviar(cadastro(CNPJ, "contato@livraria.com", "livraria")).andExpect(status().isCreated());
+        UUID id = criar();
 
-        mvc.perform(delete("/empresas/" + CNPJ)).andExpect(status().isNoContent());
+        mvc.perform(delete("/empresas/" + id).with(comoAdmin())).andExpect(status().isNoContent());
 
-        mvc.perform(get("/empresas/" + CNPJ))
+        mvc.perform(get("/empresas/" + id).with(comoAdmin()))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.codigo").value("EMPRESA_NAO_ENCONTRADA"));
     }

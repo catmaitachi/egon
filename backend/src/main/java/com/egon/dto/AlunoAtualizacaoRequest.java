@@ -1,7 +1,8 @@
 package com.egon.dto;
 
+import java.util.UUID;
+
 import com.egon.model.Usuario;
-import com.egon.validation.Cnpj;
 import com.egon.validation.Documentos;
 import com.egon.validation.Senha;
 
@@ -12,7 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
- * Edição de aluno. Não tem CPF: ele é a chave primária e não muda. A senha é opcional;
+ * Edição de aluno. Não tem CPF: ele identifica a pessoa e não muda. A senha é opcional;
  * vazia, a atual continua valendo.
  */
 public record AlunoAtualizacaoRequest(
@@ -29,7 +30,7 @@ public record AlunoAtualizacaoRequest(
         @NotBlank(message = "Informe o endereço.")
         @Size(max = 255, message = "Use até 255 caracteres.") String endereco,
 
-        @NotBlank(message = "Escolha a instituição.") @Cnpj String cnpjInstituicao,
+        @NotNull(message = "Escolha a instituição.") UUID idInstituicao,
 
         @NotNull(message = "Escolha o curso.") Integer idCurso,
 
@@ -44,7 +45,6 @@ public record AlunoAtualizacaoRequest(
         email = Campos.minusculo(email);
         rg = Campos.aparar(rg);
         endereco = Campos.aparar(endereco);
-        cnpjInstituicao = Documentos.normalizarCnpj(cnpjInstituicao);
         login = Campos.minusculo(login);
         senha = Campos.vazioComoNulo(senha);
     }

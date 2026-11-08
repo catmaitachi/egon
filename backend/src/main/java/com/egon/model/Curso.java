@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /** Curso escolhido pelo aluno numa lista, e não digitado (tabela CURSO da Sprint 2). */
 @Getter
@@ -21,6 +22,7 @@ public class Curso {
     @Column(name = "id_curso")
     private Integer id;
 
+    @Setter
     @Column(nullable = false, length = 100)
     private String nome;
 

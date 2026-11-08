@@ -1,8 +1,10 @@
 package com.egon.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,14 +30,16 @@ public class EmpresaController {
 
     private final EmpresaService empresas;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     List<EmpresaResponse> listar() {
         return empresas.listar();
     }
 
-    @GetMapping("/{cnpj}")
-    EmpresaResponse buscar(@PathVariable String cnpj) {
-        return empresas.buscar(cnpj);
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
+    @GetMapping("/{id}")
+    EmpresaResponse buscar(@PathVariable UUID id) {
+        return empresas.buscar(id);
     }
 
     @PostMapping
@@ -44,15 +48,17 @@ public class EmpresaController {
         return empresas.cadastrar(requisicao);
     }
 
-    @PutMapping("/{cnpj}")
-    EmpresaResponse atualizar(@PathVariable String cnpj, @Valid @RequestBody EmpresaAtualizacaoRequest requisicao) {
-        return empresas.atualizar(cnpj, requisicao);
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
+    @PutMapping("/{id}")
+    EmpresaResponse atualizar(@PathVariable UUID id, @Valid @RequestBody EmpresaAtualizacaoRequest requisicao) {
+        return empresas.atualizar(id, requisicao);
     }
 
-    @DeleteMapping("/{cnpj}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void excluir(@PathVariable String cnpj) {
-        empresas.excluir(cnpj);
+    void excluir(@PathVariable UUID id) {
+        empresas.excluir(id);
     }
 
 }

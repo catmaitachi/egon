@@ -1,91 +1,90 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
-import type { Aluno, AlunoCadastro, AlunoEdicao } from '../lib/api'
-import { maskCpf } from '../lib/documentos'
-import { useAcademicOptions } from '../lib/useAcademicOptions'
-import { useFormSubmit } from '../lib/useFormSubmit'
+import { ArrowClockwiseIcon } from '@phosphor-icons/react'
+import { api, type Aluno, type AlunoEdicao } from '../lib/api'
+import { maskCpf } from '../lib/format'
+import { useLoad } from '../lib/useLoad'
 import { ActionButton } from '../components/controls'
-import { FieldGroup, FormAlert, SelectField, TextField } from '../components/form'
+import { FieldGroup, FormAlert, SelectField, TextField } from '../components/fields'
+import { validarAluno } from './regras'
+import { FormActions } from './parts'
+import { minusculo, useCampos } from './useCampos'
 
-// Sem `initial`, é o cadastro (HU02). Com `initial`, é a edição: o CPF não aparece
-// (é a chave do aluno) e a senha vira opcional.
-type Props = { submitLabel: string; onCancel?: () => void } & (
-  | { initial?: undefined; onSubmit: (dados: AlunoCadastro) => Promise<void> }
-  | { initial: Aluno; onSubmit: (dados: AlunoEdicao) => Promise<void> }
-)
-
-type Values = Record<'nome' | 'email' | 'cpf' | 'rg' | 'endereco' | 'cnpjInstituicao' | 'idCurso' | 'login' | 'senha', string>
-
-function startValues(initial?: Aluno): Values {
-  return {
-    nome: initial?.nome ?? '',
-    email: initial?.email ?? '',
-    cpf: '',
-    rg: initial?.rg ?? '',
-    endereco: initial?.endereco ?? '',
-    cnpjInstituicao: initial?.instituicao.cnpj ?? '',
-    idCurso: initial ? String(initial.curso.id) : '',
-    login: initial?.login ?? '',
-    senha: '',
-  }
+type Props = {
+  // Sem aluno é o cadastro (HU02); com aluno é a edição: sem CPF (é a chave) e com senha opcional.
+  aluno?: Aluno
+  label: string
+  busyLabel: string
+  // O CPF vai separado porque só o cadastro o envia.
+  onSubmit: (dados: AlunoEdicao, cpf: string) => Promise<void>
+  onCancel?: () => void
 }
 
-export function AlunoForm(props: Props) {
-  const editing = props.initial !== undefined
-  const [values, setValues] = useState(() => startValues(props.initial))
-  const { options, error: optionsError } = useAcademicOptions()
-  const { formRef, sending, errors, alert, submit, clear } = useFormSubmit()
-
-  const bind = (name: keyof Values, mask?: (v: string) => string) => ({
-    name,
-    value: values[name],
-    error: errors[name],
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const value = mask ? mask(e.target.value) : e.target.value
-      setValues((v) => ({ ...v, [name]: value }))
-      clear(name)
-    },
+export function AlunoForm({ aluno, label, busyLabel, onSubmit, onCancel }: Props) {
+  const edicao = aluno !== undefined
+  const { formRef, sending, alert, campo, enviar } = useCampos({
+    nome: aluno?.nome ?? '',
+    email: aluno?.email ?? '',
+    cpf: '',
+    rg: aluno?.rg ?? '',
+    endereco: aluno?.endereco ?? '',
+    idInstituicao: aluno?.instituicao.id ?? '',
+    idCurso: aluno ? String(aluno.curso.id) : '',
+    login: aluno?.login ?? '',
+    senha: '',
   })
+  // Instituição e curso vêm de listas da API, nunca digitados.
+  const listas = useLoad(() => Promise.all([api.instituicoes.listar(), api.cursos.listar()]))
+  const [instituicoes, cursos] = listas.data ?? [[], []]
+  const escolha = listas.data ? 'Escolha da lista' : 'Carregando…'
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    const dados: AlunoEdicao = {
-      nome: values.nome,
-      email: values.email,
-      rg: values.rg,
-      endereco: values.endereco,
-      cnpjInstituicao: values.cnpjInstituicao,
-      idCurso: values.idCurso ? Number(values.idCurso) : null,
-      login: values.login,
-      senha: values.senha,
-    }
-    submit(() => (props.initial ? props.onSubmit(dados) : props.onSubmit({ ...dados, cpf: values.cpf })))
-  }
+  const submit = enviar(
+    (v) => validarAluno(v, edicao),
+    (v) =>
+      onSubmit(
+        {
+          nome: v.nome,
+          email: v.email,
+          rg: v.rg,
+          endereco: v.endereco,
+          idInstituicao: v.idInstituicao,
+          idCurso: Number(v.idCurso),
+          login: v.login,
+          senha: v.senha,
+        },
+        v.cpf,
+      ),
+  )
 
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} className="grid gap-10">
-      {alert && <FormAlert>{alert}</FormAlert>}
-      {optionsError && <FormAlert>{optionsError}</FormAlert>}
-
+    <form ref={formRef} noValidate onSubmit={submit} className="grid gap-10 font-normal">
       <FieldGroup legend="Dados pessoais">
-        <TextField label="Nome completo" autoComplete="name" className="md:col-span-2" {...bind('nome')} />
-        <TextField label="E-mail" type="email" autoComplete="email" className="md:col-span-2" {...bind('email')} />
-        {!editing && (
-          <TextField label="CPF" inputMode="numeric" autoComplete="off" placeholder="000.000.000-00" {...bind('cpf', maskCpf)} />
+        <TextField label="Nome completo" autoComplete="name" className="md:col-span-2" {...campo('nome')} />
+        <TextField label="E-mail" type="email" autoComplete="email" spellCheck={false} className="md:col-span-2" {...campo('email')} />
+        {!edicao && (
+          <TextField label="CPF" inputMode="numeric" autoComplete="off" placeholder="000.000.000-00" {...campo('cpf', maskCpf)} />
         )}
-        <TextField label="RG" autoComplete="off" className={editing ? 'md:col-span-2' : ''} {...bind('rg')} />
-        <TextField label="Endereço" autoComplete="street-address" className="md:col-span-2" {...bind('endereco')} />
+        <TextField label="RG" autoComplete="off" className={edicao ? 'md:col-span-2' : ''} {...campo('rg')} />
+        <TextField label="Endereço" autoComplete="street-address" className="md:col-span-2" {...campo('endereco')} />
       </FieldGroup>
 
       <FieldGroup legend="Instituição de ensino">
-        <SelectField label="Instituição" placeholder={options ? 'Escolha da lista' : 'Carregando…'} {...bind('cnpjInstituicao')}>
-          {options?.instituicoes.map((i) => (
-            <option key={i.cnpj} value={i.cnpj}>
+        {listas.error && (
+          <div className="grid justify-items-start gap-3 md:col-span-2">
+            <FormAlert>{listas.error.message}</FormAlert>
+            <ActionButton variant="outline" onClick={listas.reload}>
+              <ArrowClockwiseIcon size={18} aria-hidden />
+              Carregar as listas de novo
+            </ActionButton>
+          </div>
+        )}
+        <SelectField label="Instituição" placeholder={escolha} {...campo('idInstituicao')}>
+          {instituicoes.map((i) => (
+            <option key={i.id} value={i.id}>
               {i.nome}
             </option>
           ))}
         </SelectField>
-        <SelectField label="Curso" placeholder={options ? 'Escolha da lista' : 'Carregando…'} {...bind('idCurso')}>
-          {options?.cursos.map((c) => (
+        <SelectField label="Curso" placeholder={escolha} {...campo('idCurso')}>
+          {cursos.map((c) => (
             <option key={c.id} value={c.id}>
               {c.nome}
             </option>
@@ -98,28 +97,20 @@ export function AlunoForm(props: Props) {
           label="Login"
           autoComplete="username"
           autoCapitalize="none"
+          spellCheck={false}
           hint="Letras minúsculas, números, ponto, hífen ou sublinhado."
-          {...bind('login')}
+          {...campo('login', minusculo)}
         />
         <TextField
-          label={editing ? 'Nova senha' : 'Senha'}
+          label={edicao ? 'Nova senha' : 'Senha'}
           type="password"
           autoComplete="new-password"
-          hint={editing ? 'Deixe em branco para manter a atual.' : 'Pelo menos 8 caracteres.'}
-          {...bind('senha')}
+          hint={edicao ? 'Deixe em branco para manter a atual.' : 'De 8 a 72 caracteres.'}
+          {...campo('senha')}
         />
       </FieldGroup>
 
-      <div className="flex flex-wrap justify-end gap-3">
-        {props.onCancel && (
-          <ActionButton variant="outline" onClick={props.onCancel}>
-            Cancelar
-          </ActionButton>
-        )}
-        <ActionButton type="submit" disabled={sending}>
-          {sending ? 'Enviando…' : props.submitLabel}
-        </ActionButton>
-      </div>
+      <FormActions alert={alert} sending={sending} label={label} busyLabel={busyLabel} onCancel={onCancel} />
     </form>
   )
 }

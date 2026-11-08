@@ -1,13 +1,11 @@
 package com.egon.model;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -19,8 +17,8 @@ import lombok.Setter;
  * Tabela ALUNO do modelo de dados (docs/Sprint 2/Modelo de Dados.md), com RG e endereço,
  * que a HU02 pede.
  *
- * <p>O saldo é uma coluna do aluno, como no MER: só existe uma moeda (Ego), então não
- * há carteira por tipo de moeda. A conta começa com zero (HU02).
+ * <p>O saldo não é coluna: cada Ego guarda o professor de origem, e o aluno tem uma
+ * {@link Carteira} por professor. O saldo é a soma delas e começa em zero (HU02).
  */
 @Getter
 @Setter
@@ -29,9 +27,8 @@ import lombok.Setter;
 @Table(name = "aluno")
 public class Aluno extends Usuario {
 
-    @Id
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 11)
+    @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
     @Column(nullable = false, length = 100)
@@ -47,21 +44,11 @@ public class Aluno extends Usuario {
     private String endereco;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cnpj_instituicao", nullable = false)
+    @JoinColumn(name = "instituicao_id", nullable = false)
     private Instituicao instituicao;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_curso", nullable = false)
+    @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
-
-    /** O default no banco deixa o {@code ddl-auto=update} criar a coluna numa tabela que já tem alunos. */
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private int saldo;
-
-    @Override
-    public String getId() {
-        return cpf;
-    }
 
 }
