@@ -16,7 +16,7 @@ API, em `http://localhost:8080`, com o modo dev (login sem senha pelo código Ko
 cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-Sem `-Dspring-boot.run.profiles=dev` a API sobe sem o modo dev, como deve ser fora da máquina de quem desenvolve. No Windows, sem Git Bash, use `mvnw.cmd` dentro de `backend`. O banco fica em `backend/data/egon2` e nasce na primeira subida com três instituições, oito cursos, quatro professores e o admin.
+Sem `-Dspring-boot.run.profiles=dev` a API sobe sem o modo dev, como deve ser fora da máquina de quem desenvolve. No Windows, sem Git Bash, use `mvnw.cmd` dentro de `backend`. O banco fica em `backend/data/egon3` e nasce na primeira subida com três instituições, oito cursos, quatro professores e o admin.
 
 Front-end, em `http://localhost:5173`, com a API (inclusive o WebSocket dos avisos) atrás do prefixo `/api`:
 

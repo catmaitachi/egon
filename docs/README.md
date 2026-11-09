@@ -14,7 +14,7 @@ Os diagramas estão alinhados entre si e com as histórias de usuário; as diver
    - Interações dos atores (Aluno, Professor, Empresa) com o sistema.
 
 3. **[Diagrama de Classes](Sprint%201/Diagrama%20de%20Classes.png)**
-   - Entidades de domínio: `Usuario` (abstrata), `Aluno`, `Professor`, `Empresa`, `Instituicao`, `Curso`, `CotaSemestral`, `Transacao`, `Vantagem` (com o enum `TipoVantagem`), `Troca`, `Cupom` e `Notificacao`.
+   - Entidades de domínio: `Usuario` (abstrata), `Aluno`, `Professor`, `Empresa`, `Admin`, `Instituicao`, `Curso`, `CotaSemestral`, `Transacao`, `Carteira`, `Transferencia` (com `StatusTransferencia`), `RegrasMoeda`, `Vantagem` (com `TipoVantagem`), `Troca`, `TrocaDebito`, `Cupom` (com `StatusCupom`) e `Notificacao`.
 
 ## Sprint 2 (Lab03S02)
 
@@ -37,6 +37,14 @@ Os diagramas estão alinhados entre si e com as histórias de usuário; as diver
 6. **Implementação: moedas, extratos e aviso ao vivo**
    - Professores pré-cadastrados (HU04), cota semestral (HU05), envio de Egos com motivo obrigatório (HU06), aviso no app ao vivo por WebSocket para o aluno e o professor (HU07) e extratos do aluno e do professor (HU11, HU12).
    - Sem login (HU01): a tela Entrar escolhe o perfil sem senha. Endpoints, formato dos avisos e decisões em [Modelo de Dados](Sprint%202/Modelo%20de%20Dados.md).
+
+## Sprint 3
+
+1. **[Diagramas de Sequência](Sprint%203/Diagramas%20de%20Sequencia/README.md)**
+   - Um por caso de uso do Diagrama de Casos de Uso, no padrão dos slides da disciplina, com as mensagens que o código usa.
+
+2. **Implementação: e-mails de moedas (HU07)**
+   - A cada envio confirmado, um e-mail ao aluno (moedas recebidas) e outro ao professor (envio confirmado), cada um com o seu template, além do aviso no app. O professor passou a ter e-mail. Configuração e decisões em [Modelo de Dados](Sprint%202/Modelo%20de%20Dados.md) (linhas 36 a 38).
 
 ## Rodada 2
 

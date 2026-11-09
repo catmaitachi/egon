@@ -120,7 +120,7 @@ export const roles: Role[] = [
     line: 'Crie sua conta, acompanhe o saldo e troque quando quiser.',
     points: [
       { icon: WalletIcon, text: 'Saldo e extrato' },
-      { icon: BellRingingIcon, text: 'Aviso no app' },
+      { icon: BellRingingIcon, text: 'Aviso por e-mail e no app' },
       { icon: TicketIcon, text: 'Cupom na hora' },
     ],
     action: { label: 'Criar conta', href: routes.signup },
@@ -156,7 +156,7 @@ export const closing = {
   highlight: 'Egos.',
 }
 
-// Aviso ao vivo no app (HU07, no lugar do e-mail). Montado aqui porque o nome da moeda só existe neste arquivo.
+// Aviso ao vivo no app (HU07, junto com o e-mail que o back-end manda). Montado aqui porque o nome da moeda só existe neste arquivo.
 export type LiveNotice = { title: string; text: string; message: string }
 
 type Delivered = { transacao: Transacao; saldo: number }

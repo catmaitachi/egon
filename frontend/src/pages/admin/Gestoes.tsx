@@ -107,7 +107,7 @@ export function Professores() {
               {p.departamento} · {p.instituicao.nome}
             </p>
             <p className={detalhe}>
-              <span className="tabular-nums">CPF {maskCpf(p.cpf)}</span> · login {p.login}
+              <span className="tabular-nums">CPF {maskCpf(p.cpf)}</span> · login {p.login} · {p.email}
             </p>
           </div>
           <p className="flex items-center gap-2 tabular-nums whitespace-nowrap">

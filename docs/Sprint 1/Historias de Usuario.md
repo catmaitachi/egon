@@ -52,9 +52,9 @@
   - **quero** que nossos professores sejam pré-cadastrados no sistema pelo admin, com seus departamentos,
   - **para** que eles tenham contas ativas vinculadas à nossa instituição sem precisarem passar por um autocadastro público.
 - **Cenário Explicativo:**
-  - No momento em que uma instituição de ensino firma parceria com o sistema, ela fornece ao admin a relação dos docentes autorizados a distribuir moedas, e o admin os cadastra. Cada registro armazena Nome do Professor, CPF, Departamento em que leciona e a Instituição à qual pertence, acompanhado de seu login e senha inicial.
+  - No momento em que uma instituição de ensino firma parceria com o sistema, ela fornece ao admin a relação dos docentes autorizados a distribuir moedas, e o admin os cadastra. Cada registro armazena Nome do Professor, CPF, e-mail institucional, Departamento em que leciona e a Instituição à qual pertence, acompanhado de seu login e senha inicial. O e-mail é onde o professor recebe a confirmação de cada envio de moedas (HU07).
   - O professor cadastrado no meio do semestre recebe a cota daquele semestre na hora (HU05).
-  - O sistema garante que cada professor esteja explicitamente associado à sua instituição e com CPF único, habilitando-o a realizar login e a receber sua cota semestral de moedas.
+  - O sistema garante que cada professor esteja explicitamente associado à sua instituição, com CPF e e-mail únicos, habilitando-o a realizar login e a receber sua cota semestral de moedas.
 
 ---
 
@@ -82,15 +82,17 @@
 
 ---
 
-#### HU07 — Notificação de Moedas Recebidas no App
+#### HU07 — Notificação de Moedas Recebidas por E-mail e no App
 - **Declaração:**
   - **Eu como** aluno bonificado e professor que fez a transferência,
-  - **quero** ser avisado no app, ao vivo, assim que a transferência for confirmada,
-  - **para** que o aluno saiba na hora o valor recebido, o professor remetente e o motivo do reconhecimento, e o professor tenha a confirmação do envio.
+  - **quero** receber um e-mail, e ser avisado no app, assim que a transferência for confirmada,
+  - **para** que o aluno saiba o valor recebido, o professor remetente e o motivo do reconhecimento, e o professor tenha a confirmação do envio.
 - **Cenário Explicativo:**
-  - Imediatamente após a confirmação de uma transferência de moedas feita pelo professor, o sistema avisa o aluno no app, sem que ele precise recarregar a página. O aviso contém o nome completo do professor, a quantidade exata de moedas recebidas, a data da transação e a íntegra da mensagem de justificativa escrita pelo professor. O saldo e o extrato do aluno se atualizam junto.
-  - No mesmo momento, o professor recebe no app a confirmação do envio, com o nome do aluno, a quantidade de moedas, a data, a mensagem e o saldo que lhe resta.
-  - Se o aluno não estiver com o app aberto, a transferência aparece no seu extrato (HU11) quando ele voltar.
+  - Imediatamente após a confirmação de uma transferência de moedas feita pelo professor, o sistema envia dois e-mails, cada um com o seu modelo (template):
+    1. **E-mail para o Aluno (moedas recebidas):** o nome completo do professor, a quantidade exata de moedas recebidas, a data da transação, a íntegra da mensagem de justificativa, o saldo atualizado e o código da transação.
+    2. **E-mail para o Professor (envio confirmado):** o nome do aluno, a quantidade de moedas, a data, a mensagem, o saldo que lhe resta para distribuir e o mesmo código da transação.
+  - Os e-mails só saem depois que a transferência está gravada: um envio recusado (saldo insuficiente, aluno de outra instituição, motivo em branco) não gera e-mail. Uma falha do servidor de e-mail também não desfaz a transferência.
+  - No mesmo momento, os dois são avisados no app, ao vivo, sem recarregar a página; o saldo e o extrato do aluno se atualizam junto. Se o aluno não estiver com o app aberto, o e-mail fica na caixa dele e a transferência aparece no seu extrato (HU11) quando ele voltar.
 
 ---
 
@@ -196,7 +198,7 @@ Mapeamento entre as Histórias de Usuário, os casos de uso do [Diagrama de Caso
 | **HU04** | Pré-cadastro de Professores | Instituição / Admin | Sem caso de uso no diagrama: o admin cadastra a partir da lista da instituição | `Professor`, `Instituicao`, `Usuario` |
 | **HU05** | Cota Semestral de Moedas | Sistema / Professor | Sem caso de uso: regra executada pelo sistema a cada semestre | `Professor`, `CotaSemestral` |
 | **HU06** | Envio de Moedas por Mérito | Professor | Distribuir moedas | `Professor`, `Aluno`, `Transacao` |
-| **HU07** | Notificação de Moedas Recebidas | Aluno e Professor | Distribuir moedas (aviso no app ao aluno e ao professor) | `Aluno`, `Professor`, `Transacao` |
+| **HU07** | Notificação de Moedas Recebidas | Aluno e Professor | Distribuir moedas (e-mail e aviso no app ao aluno e ao professor) | `Aluno`, `Professor`, `Transacao` |
 | **HU08** | Cadastro de Vantagens | Empresa | Cadastrar vantagens | `Empresa`, `Vantagem` |
 | **HU09** | Consulta e Resgate de Vantagens | Aluno | Trocar moedas | `Aluno`, `Vantagem`, `Troca` |
 | **HU10** | Emissão e Aviso do Cupom | Aluno e Empresa | Trocar moedas (avisos no app com o cupom) | `Cupom`, `Troca`, `Notificacao`, `Empresa`, `Aluno` |

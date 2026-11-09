@@ -2,6 +2,7 @@ package com.egon.config;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,12 @@ class DadosIniciais implements SmartInitializingSingleton {
     private static final String HORIZONTE = "11222333000181";
     private static final String VALE_VERDE = "45218073000192";
     private static final String AURORA = "28039156000103";
+
+    /** Domínio do e-mail institucional dos professores pré-cadastrados, por instituição (fictícios). */
+    private static final Map<String, String> DOMINIOS = Map.of(
+            HORIZONTE, "horizonte.edu.br",
+            VALE_VERDE, "valeverde.edu.br",
+            AURORA, "aurora.edu.br");
 
     /** Senha inicial dos professores pré-cadastrados; a troca depende do login (HU01). */
     private static final String SENHA_INICIAL = "professor123";
@@ -109,6 +116,7 @@ class DadosIniciais implements SmartInitializingSingleton {
         Professor professor = new Professor();
         professor.setCpf(cpf);
         professor.setNome(nome);
+        professor.setEmail(login + "@" + DOMINIOS.get(cnpjInstituicao));
         professor.setDepartamento(departamento);
         professor.setInstituicao(instituicoes.findByCnpj(cnpjInstituicao).orElseThrow());
         professor.setLogin(login);

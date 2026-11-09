@@ -18,7 +18,7 @@ import lombok.Setter;
 /**
  * Tabela PROFESSOR do modelo de dados. Cadastrado pelo admin a partir da lista da instituição (HU04).
  *
- * <p>Não tem e-mail: o aviso de envio confirmado é no app, ao vivo (HU07).
+ * <p>O e-mail recebe a confirmação de cada envio de moedas (HU07), além do aviso ao vivo no app.
  * O saldo é o que o professor ainda pode enviar: vem da cota semestral (HU05) e sai nas transações.
  */
 @Getter
@@ -34,6 +34,9 @@ public class Professor extends Usuario {
 
     @Column(nullable = false, length = 100)
     private String nome;
+
+    @Column(nullable = false, unique = true, length = 100)
+    private String email;
 
     @Column(nullable = false, length = 100)
     private String departamento;

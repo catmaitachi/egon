@@ -45,6 +45,7 @@ export function ProfessorForm({ item, label, busyLabel, onSubmit, onCancel }: Ba
   const { formRef, sending, alert, campo, enviar } = useCampos({
     cpf: '',
     nome: item?.nome ?? '',
+    email: item?.email ?? '',
     departamento: item?.departamento ?? '',
     idInstituicao: item?.instituicao.id ?? '',
     login: item?.login ?? '',
@@ -55,6 +56,15 @@ export function ProfessorForm({ item, label, busyLabel, onSubmit, onCancel }: Ba
       <FieldGroup legend="Professor">
         {!edicao && <TextField label="CPF" inputMode="numeric" autoComplete="off" {...campo('cpf', maskCpf)} />}
         <TextField label="Nome completo" maxLength={100} className={edicao ? 'md:col-span-2' : ''} {...campo('nome')} />
+        <TextField
+          label="E-mail"
+          type="email"
+          autoComplete="off"
+          spellCheck={false}
+          className="md:col-span-2"
+          hint="Recebe a confirmação de cada envio de Egos."
+          {...campo('email')}
+        />
         <TextField label="Departamento" maxLength={100} {...campo('departamento')} />
         <SelectField label="Instituição" placeholder={instituicoes.data ? 'Escolha' : 'Carregando…'} {...campo('idInstituicao')}>
           {instituicoes.data?.map((i) => (

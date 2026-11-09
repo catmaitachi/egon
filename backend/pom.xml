@@ -38,6 +38,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
+		<!-- E-mails de confirmação do envio e do recebimento de moedas (HU07): SMTP e templates HTML. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
 		<!-- Só o BCrypt. O starter de segurança inteiro fecharia todas as rotas, e a
 		     autenticação (HU01) ainda não foi implementada. -->
 

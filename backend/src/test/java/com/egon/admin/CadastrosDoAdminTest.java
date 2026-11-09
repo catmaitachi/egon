@@ -64,9 +64,9 @@ class CadastrosDoAdminTest {
 
     private String professor(String cpf, String login, UUID instituicao) {
         return """
-                {"cpf": "%s", "nome": "Paula Reis", "departamento": "Matemática", "idInstituicao": "%s",
-                 "login": "%s", "senha": "inicial123"}
-                """.formatted(cpf, instituicao, login);
+                {"cpf": "%s", "nome": "Paula Reis", "email": "%s@horizonte.edu.br", "departamento": "Matemática",
+                 "idInstituicao": "%s", "login": "%s", "senha": "inicial123"}
+                """.formatted(cpf, login, instituicao, login);
     }
 
     // ---- Instituições ----
@@ -141,6 +141,7 @@ class CadastrosDoAdminTest {
         UUID id = Dados.id(admin(post("/professores"), professor("529.982.247-25", "paula.reis", horizonte()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.cpf").value(Dados.ANA))
+                .andExpect(jsonPath("$.email").value("paula.reis@horizonte.edu.br"))
                 .andExpect(jsonPath("$.saldo").value(1000))
                 .andExpect(jsonPath("$.instituicao.id").value(horizonte().toString()))
                 .andReturn());
@@ -153,7 +154,7 @@ class CadastrosDoAdminTest {
     }
 
     @Test
-    @DisplayName("professor: recusa CPF inválido ou repetido, login de outro perfil e instituição inexistente")
+    @DisplayName("professor: recusa CPF inválido ou repetido, e-mail inválido ou repetido, login de outro perfil e instituição inexistente")
     void professorRegras() throws Exception {
         admin(post("/professores"), professor("52998224724", "paula", horizonte()))
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.campos.cpf").exists());
@@ -163,6 +164,14 @@ class CadastrosDoAdminTest {
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.codigo").value("LOGIN_EM_USO"));
         admin(post("/professores"), professor(Dados.ANA, "paula", UUID.randomUUID()))
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.codigo").value("INSTITUICAO_NAO_ENCONTRADA"));
+        // O e-mail recebe a confirmação de cada envio (HU07): obrigatório, válido e de um professor só.
+        String paula = professor(Dados.ANA, "paula", horizonte());
+        admin(post("/professores"), paula.replace("paula@horizonte.edu.br", "helena.duarte@horizonte.edu.br"))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.codigo").value("EMAIL_EM_USO"));
+        admin(post("/professores"), paula.replace("paula@horizonte.edu.br", "sem-arroba"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.campos.email").exists());
+        admin(post("/professores"), paula.replace("paula@horizonte.edu.br", ""))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.campos.email").exists());
     }
 
     @Test
@@ -172,9 +181,17 @@ class CadastrosDoAdminTest {
         String antes = professores.findById(paula).orElseThrow().getSenha();
 
         admin(put("/professores/" + paula), """
-                {"nome": "Paula Reis Lima", "departamento": "Estatística", "idInstituicao": "%s", "login": "paula.lima", "senha": ""}
+                {"nome": "Paula Reis Lima", "email": "helena.duarte@horizonte.edu.br", "departamento": "Estatística",
+                 "idInstituicao": "%s", "login": "paula.lima", "senha": ""}
+                """.formatted(horizonte()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.codigo").value("EMAIL_EM_USO"));
+        admin(put("/professores/" + paula), """
+                {"nome": "Paula Reis Lima", "email": "Paula.Lima@Horizonte.edu.br", "departamento": "Estatística",
+                 "idInstituicao": "%s", "login": "paula.lima", "senha": ""}
                 """.formatted(horizonte()))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("paula.lima@horizonte.edu.br"))
                 .andExpect(jsonPath("$.nome").value("Paula Reis Lima"))
                 .andExpect(jsonPath("$.login").value("paula.lima"));
         assertThat(professores.findById(paula).orElseThrow().getSenha()).isEqualTo(antes);

@@ -57,12 +57,16 @@ public class ProfessorService {
         if (professores.existsByCpf(requisicao.cpf())) {
             throw ApiException.cpfDeProfessorEmUso();
         }
+        if (professores.existsByEmail(requisicao.email())) {
+            throw ApiException.emailEmUso();
+        }
         if (usuarios.existsByLogin(requisicao.login())) {
             throw ApiException.loginEmUso();
         }
         Professor professor = new Professor();
         professor.setCpf(requisicao.cpf());
         professor.setNome(requisicao.nome());
+        professor.setEmail(requisicao.email());
         professor.setDepartamento(requisicao.departamento());
         professor.setInstituicao(instituicoes.findById(requisicao.idInstituicao())
                 .orElseThrow(ApiException::instituicaoNaoEncontrada));
@@ -77,10 +81,14 @@ public class ProfessorService {
     @Transactional
     public ProfessorResponse atualizar(UUID id, ProfessorAtualizacaoRequest requisicao) {
         Professor professor = professores.findBloqueadoById(id).orElseThrow(ApiException::professorNaoEncontrado);
+        if (professores.existsByEmailAndIdNot(requisicao.email(), id)) {
+            throw ApiException.emailEmUso();
+        }
         if (!requisicao.login().equals(professor.getLogin()) && usuarios.existsByLogin(requisicao.login())) {
             throw ApiException.loginEmUso();
         }
         professor.setNome(requisicao.nome());
+        professor.setEmail(requisicao.email());
         professor.setDepartamento(requisicao.departamento());
         professor.setInstituicao(instituicoes.findById(requisicao.idInstituicao())
                 .orElseThrow(ApiException::instituicaoNaoEncontrada));

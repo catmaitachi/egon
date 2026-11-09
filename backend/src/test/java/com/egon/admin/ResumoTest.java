@@ -77,8 +77,8 @@ class ResumoTest {
         UUID ana = Dados.cadastrarAluno(mvc, "Ana Souza", Dados.ANA, "ana", horizonte, curso);
         UUID bruno = Dados.cadastrarAluno(mvc, "Bruno Lima", Dados.BRUNO, "bruno", horizonte, curso);
         UUID paula = postId("/professores", comoAdmin(), """
-                {"cpf": "%s", "nome": "Paula Reis", "departamento": "Matemática", "idInstituicao": "%s",
-                 "login": "paula", "senha": "inicial123"}
+                {"cpf": "%s", "nome": "Paula Reis", "email": "paula@horizonte.edu.br", "departamento": "Matemática",
+                 "idInstituicao": "%s", "login": "paula", "senha": "inicial123"}
                 """.formatted(Dados.EDU, horizonte));
 
         String envio = "{\"idAluno\": \"%s\", \"valor\": %d, \"motivo\": \"m\"}";

@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.egon.model.Usuario;
 import com.egon.validation.Senha;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -14,6 +15,9 @@ import jakarta.validation.constraints.Size;
 public record ProfessorAtualizacaoRequest(
         @NotBlank(message = "Informe o nome completo.")
         @Size(max = 100, message = "Use até 100 caracteres.") String nome,
+        @NotBlank(message = "Informe o e-mail.")
+        @Email(regexp = Campos.EMAIL_FORMATO, message = "E-mail inválido.")
+        @Size(max = 100, message = "Use até 100 caracteres.") String email,
         @NotBlank(message = "Informe o departamento.")
         @Size(max = 100, message = "Use até 100 caracteres.") String departamento,
         @NotNull(message = "Escolha a instituição.") UUID idInstituicao,
@@ -24,6 +28,7 @@ public record ProfessorAtualizacaoRequest(
 
     public ProfessorAtualizacaoRequest {
         nome = Campos.aparar(nome);
+        email = Campos.minusculo(email);
         departamento = Campos.aparar(departamento);
         login = Campos.minusculo(login);
         senha = Campos.vazioComoNulo(senha);

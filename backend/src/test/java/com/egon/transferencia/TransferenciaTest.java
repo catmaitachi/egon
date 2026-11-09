@@ -323,7 +323,8 @@ class TransferenciaTest {
         regras(SEM_APROVACAO);
         UUID valeVerde = instituicoes.findByCnpj(Dados.VALE_VERDE).orElseThrow().getId();
         mvc.perform(put("/professores/" + helena).with(comoAdmin()).contentType(MediaType.APPLICATION_JSON).content("""
-                {"nome": "Helena Duarte", "departamento": "Computação", "idInstituicao": "%s", "login": "helena.duarte", "senha": ""}
+                {"nome": "Helena Duarte", "email": "helena.duarte@horizonte.edu.br", "departamento": "Computação",
+                 "idInstituicao": "%s", "login": "helena.duarte", "senha": ""}
                 """.formatted(valeVerde))).andExpect(status().isOk());
 
         assertThat(carteira(ana, helena)).isEqualTo(100);

@@ -52,6 +52,7 @@ export type Professor = {
   id: string
   cpf: string
   nome: string
+  email: string
   departamento: string
   instituicao: Instituicao
   login: string
@@ -60,6 +61,7 @@ export type Professor = {
 export type ProfessorCadastro = {
   cpf: string
   nome: string
+  email: string
   departamento: string
   idInstituicao: string
   login: string

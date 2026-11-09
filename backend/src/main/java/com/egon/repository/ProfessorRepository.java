@@ -38,6 +38,10 @@ public interface ProfessorRepository extends JpaRepository<Professor, UUID> {
 
     boolean existsByCpf(String cpf);
 
+    boolean existsByEmail(String email);
+
+    boolean existsByEmailAndIdNot(String email, UUID id);
+
     @Query("select coalesce(sum(p.saldo), 0) from Professor p")
     long somaSaldos();
 

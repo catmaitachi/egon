@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<!-- HU07: e-mail ao aluno quando um professor envia moedas. Variáveis: nomeAluno, nomeProfessor, valor,
+     data, motivo, saldo, codigo, linkPainel (EmailsDaTransacao). CSS inline: clientes de e-mail ignoram <style>. -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Você recebeu Egos</title>
+</head>
+<body style="margin:0;padding:0;background:#f2f0f1;font-family:Helvetica,Arial,sans-serif;color:#161415;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f0f1;padding:32px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:#0b0a0b;padding:22px 32px;">
+            <span style="font-size:22px;font-weight:800;letter-spacing:3px;color:#fbf9fa;">EG<span style="color:#6a4cff;">O</span>N</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 32px 8px;">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6a4cff;">Moedas recebidas</p>
+            <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25;color:#0b0a0b;">
+              Olá, <span th:text="${nomeAluno}">Beatriz Nogueira</span>! Você recebeu
+              <span style="color:#6a4cff;" th:text="${valor}">300 Egos</span>.
+            </h1>
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#4a4547;">
+              <strong th:text="${nomeProfessor}">Helena Duarte</strong> reconheceu o seu mérito e deixou esta mensagem:
+            </p>
+            <blockquote style="margin:0 0 24px;padding:16px 20px;background:#f6f4ff;border-left:4px solid #6a4cff;border-radius:8px;font-size:16px;line-height:1.55;color:#161415;"
+                        th:text="${motivo}">Apresentou o melhor projeto final da disciplina.</blockquote>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7e3e5;font-size:14px;">
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;">Professor</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;" th:text="${nomeProfessor}">Helena Duarte</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Quantidade</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;border-top:1px solid #e7e3e5;" th:text="${valor}">300 Egos</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Data</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;border-top:1px solid #e7e3e5;" th:text="${data}">09/11/2026 às 18:30</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Seu saldo agora</td>
+                <td style="padding:12px 0;text-align:right;font-weight:800;color:#6a4cff;border-top:1px solid #e7e3e5;" th:text="${saldo}">450 Egos</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 32px 32px;">
+            <a th:href="${linkPainel}" href="#"
+               style="display:inline-block;padding:14px 28px;background:#6a4cff;color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:14px;letter-spacing:1px;">VER MEU SALDO E AS VANTAGENS</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 32px;background:#f8f7f7;font-size:12px;line-height:1.6;color:#7a7376;">
+            Código da transação: <span style="font-family:monospace;" th:text="${codigo}">00000000-0000-0000-0000-000000000000</span><br>
+            Você recebeu este e-mail porque tem uma conta de aluno no Egon. Não responda: esta caixa não é lida.
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

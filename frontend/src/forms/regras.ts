@@ -107,12 +107,13 @@ export function validarEmpresa(v: ValoresEmpresa, edicao: boolean): Erros {
   })
 }
 
-export type ValoresProfessor = Record<'cpf' | 'nome' | 'departamento' | 'idInstituicao' | 'login' | 'senha', string>
+export type ValoresProfessor = Record<'cpf' | 'nome' | 'email' | 'departamento' | 'idInstituicao' | 'login' | 'senha', string>
 
 export function validarProfessor(v: ValoresProfessor, edicao: boolean): Erros {
   return soErros({
     cpf: edicao ? undefined : cpf(v.cpf),
     nome: texto(v.nome, 'Informe o nome completo.', 100),
+    email: email(v.email, 'Informe o e-mail.'),
     departamento: texto(v.departamento, 'Informe o departamento.', 100),
     idInstituicao: v.idInstituicao ? undefined : 'Escolha a instituição.',
     login: login(v.login),
