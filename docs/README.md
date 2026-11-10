@@ -46,7 +46,7 @@ Artefatos de engenharia de software do **Egon**, o Sistema de Moeda Estudantil. 
 
 Versões vigentes, refeitas a partir do código (decisão na linha 39 do Modelo de Dados).
 
-1. **[Histórias de Usuário](Sprint%203/Historias%20de%20Usuario.md)**: HU01 a HU14, com a HU07 por e-mail e no app e a matriz de rastreabilidade ligada aos 14 casos de uso.
+1. **[Histórias de Usuário](Sprint%203/Historias%20de%20Usuario.md)**: HU01 a HU14, com a HU07 e a HU10 por e-mail e no app e a matriz de rastreabilidade ligada aos 14 casos de uso.
 2. **[Diagrama de Casos de Uso](Sprint%203/Casos%20de%20Uso.png)**: Aluno, Professor, Empresa e Admin, com os casos de repasse, conferência de cupom e administração.
 3. **[Diagrama de Classes](Sprint%203/Diagrama%20de%20Classes.png)**: `Usuario` (abstrata), `Aluno`, `Professor`, `Empresa`, `Admin`, `Instituicao`, `Curso`, `CotaSemestral`, `Transacao`, `Carteira`, `Transferencia`, `RegrasMoeda`, `Vantagem`, `Troca`, `TrocaDebito`, `Cupom` e os enums de tipo e status.
 4. **[Diagrama de Componentes](Sprint%203/Diagrama%20de%20Componentes.png)** e a [versão reduzida](Sprint%203/diagrama-de-componentes-reduzido.png): telas, controllers e WebSocket, services, repositórios, banco, servidor de e-mail e pasta de fotos.
@@ -54,3 +54,4 @@ Versões vigentes, refeitas a partir do código (decisão na linha 39 do Modelo 
 6. **[Modelo de Dados](Sprint%203/Modelo%20de%20Dados.md)**: divergências e decisões, esquema relacional, o que está implementado e a lista dos diagramas.
 7. **[Diagramas de Sequência](Sprint%203/Diagramas%20de%20Sequencia/README.md)**: um por caso de uso, no padrão dos slides da disciplina.
 8. **Implementação: e-mails de moedas (HU07)**: a cada envio, um e-mail ao aluno (moedas recebidas) e outro ao professor (envio confirmado), cada um com o seu template, além do aviso no app.
+9. **Implementação: e-mails do cupom (HU10)**: a cada resgate, um e-mail ao aluno com o cupom e outro à empresa para conferir a troca, com o mesmo código e cada um com o seu template, além do aviso no app.

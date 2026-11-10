@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<!-- HU10: e-mail ao aluno com o cupom do resgate, para a troca presencial. Variáveis: codigo, nomeVantagem,
+     descricaoVantagem, valor, data, nomeEmpresa, nomeAluno, saldo, linkPainel (EmailsDoCupom). -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seu cupom Egon</title>
+</head>
+<body style="margin:0;padding:0;background:#f2f0f1;font-family:Helvetica,Arial,sans-serif;color:#161415;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f0f1;padding:32px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:#0b0a0b;padding:22px 32px;">
+            <span style="font-size:22px;font-weight:800;letter-spacing:3px;color:#fbf9fa;">EG<span style="color:#6a4cff;">O</span>N</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 32px 8px;">
+            <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6a4cff;">Cupom de troca</p>
+            <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25;color:#0b0a0b;">
+              Pronto, <span th:text="${nomeAluno}">Beatriz Nogueira</span>! Seu
+              <span style="color:#6a4cff;" th:text="${nomeVantagem}">Combo almoço executivo</span> está garantido.
+            </h1>
+            <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#4a4547;">
+              Apresente este código em <strong th:text="${nomeEmpresa}">Café Central</strong> na hora da troca.
+              A empresa confere o mesmo código, que ela também recebeu por e-mail.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:0 32px 24px;">
+            <div style="padding:22px 16px;border:2px dashed #6a4cff;border-radius:14px;background:#f6f4ff;">
+              <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a7376;">Código do cupom</p>
+              <p style="margin:0;font-family:'Courier New',monospace;font-size:30px;font-weight:700;letter-spacing:3px;color:#0b0a0b;"
+                 th:text="${codigo}">EGON-7M34-7K2K</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7e3e5;font-size:14px;">
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;">Vantagem</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;" th:text="${nomeVantagem}">Combo almoço executivo</td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding:0 0 12px;color:#4a4547;font-size:13px;line-height:1.5;" th:text="${descricaoVantagem}">Prato do dia com bebida e sobremesa.</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Empresa parceira</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;border-top:1px solid #e7e3e5;" th:text="${nomeEmpresa}">Café Central</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Debitado</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;border-top:1px solid #e7e3e5;" th:text="${valor}">120 Egos</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Data do resgate</td>
+                <td style="padding:12px 0;text-align:right;font-weight:700;border-top:1px solid #e7e3e5;" th:text="${data}">10/11/2026 às 12:30</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;color:#7a7376;border-top:1px solid #e7e3e5;">Seu saldo agora</td>
+                <td style="padding:12px 0;text-align:right;font-weight:800;color:#6a4cff;border-top:1px solid #e7e3e5;" th:text="${saldo}">330 Egos</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 32px 32px;">
+            <a th:href="${linkPainel}" href="#"
+               style="display:inline-block;padding:14px 28px;background:#6a4cff;color:#ffffff;text-decoration:none;font-weight:700;border-radius:999px;font-size:14px;letter-spacing:1px;">VER MEUS CUPONS</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 32px;background:#f8f7f7;font-size:12px;line-height:1.6;color:#7a7376;">
+            O código vale uma única troca. No app, o cupom também aparece com o QR code em "Meus cupons".<br>
+            Você recebeu este e-mail porque resgatou uma vantagem no Egon. Não responda: esta caixa não é lida.
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

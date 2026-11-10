@@ -133,15 +133,16 @@
 
 ---
 
-#### HU10 — Emissão do Cupom de Troca e Aviso no App
+#### HU10 — Emissão do Cupom de Troca por E-mail e no App
 - **Declaração:**
   - **Eu como** aluno e empresa parceira envolvidos no resgate de uma vantagem,
-  - **quero** receber um aviso no app com os detalhes da troca e um código validador exclusivo gerado pelo sistema,
+  - **quero** receber um e-mail, e um aviso no app, com os detalhes da troca e um código validador exclusivo gerado pelo sistema,
   - **para** que o aluno possa apresentar o cupom presencialmente e a empresa possa conferir e validar a troca.
 - **Cenário Explicativo:**
-  - No exato momento em que um resgate de vantagem é confirmado com sucesso, o sistema gera um código de cupom único (alfanumérico) e dispara simultaneamente dois avisos no app:
-    1. **Aviso para o Aluno:** Contém o código validador, o nome da vantagem, o valor em moedas debitado e a identificação da empresa parceira, servindo como comprovante para uso presencial.
-    2. **Aviso para a Empresa Parceira:** Contém o mesmo código validador, os dados do aluno beneficiado e a descrição da vantagem trocada.
+  - No exato momento em que um resgate de vantagem é confirmado com sucesso, o sistema gera um código de cupom único (alfanumérico) e envia dois e-mails, cada um com o seu modelo (template):
+    1. **E-mail para o Aluno:** Contém o código validador, o nome e a descrição da vantagem, o valor em moedas debitado, a identificação da empresa parceira e o saldo que restou, servindo como comprovante para uso presencial.
+    2. **E-mail para a Empresa Parceira:** Contém o mesmo código validador, os dados do aluno beneficiado (nome, e-mail, curso e instituição), a descrição da vantagem trocada e um link que abre a conferência do cupom no painel.
+  - Os e-mails só saem depois que o resgate está gravado: um resgate recusado (saldo insuficiente) não gera e-mail. No mesmo momento, os dois também são avisados no app, ao vivo.
   - No momento do atendimento presencial, o parceiro digita o código informado pelo aluno (ou lê o QR code do cupom, que abre a conferência com o código preenchido), vê quem resgatou o quê e confirma a troca antes de entregar o produto ou conceder o desconto. O aluno recebe o aviso de que o cupom foi usado. Um cupom já usado não pode ser confirmado de novo, e a empresa só confere cupons das próprias vantagens.
   - O código tem o formato `EGON-XXXX-XXXX`, sorteado de forma segura (impossível de adivinhar); a conferência aceita minúsculas, espaços e o código sem hífens.
 
@@ -201,7 +202,7 @@ Mapeamento entre as Histórias de Usuário, os casos de uso do [Diagrama de Caso
 | **HU07** | Notificação de Moedas Recebidas | Aluno e Professor | Distribuir moedas (e-mail e aviso no app ao aluno e ao professor) | `Aluno`, `Professor`, `Transacao` |
 | **HU08** | Cadastro de Vantagens | Empresa | Cadastrar vantagens | `Empresa`, `Vantagem` |
 | **HU09** | Consulta e Resgate de Vantagens | Aluno | Trocar moedas | `Aluno`, `Vantagem`, `Troca` |
-| **HU10** | Emissão e Aviso do Cupom | Aluno e Empresa | Trocar moedas (avisos no app com o cupom) / Conferir cupom | `Cupom`, `Troca`, `TrocaDebito`, `Empresa`, `Aluno` |
+| **HU10** | Emissão e Aviso do Cupom | Aluno e Empresa | Trocar moedas (e-mail e aviso no app com o cupom) / Conferir cupom | `Cupom`, `Troca`, `TrocaDebito`, `Empresa`, `Aluno` |
 | **HU11** | Extrato do Aluno | Aluno | Visualizar saldo / Visualizar transações | `Aluno`, `Transacao`, `Troca` |
 | **HU12** | Extrato do Professor | Professor | Visualizar saldo / Visualizar transações | `Professor`, `Transacao`, `CotaSemestral` |
 | **HU13** | Repasse de Moedas entre Alunos | Aluno e Professor | Repassar moedas / Aprovar repasse / Definir regras de repasse | `Aluno`, `Professor`, `Carteira`, `Transferencia`, `RegrasMoeda` |
