@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Tabela ALUNO do modelo de dados (docs/Sprint 2/Modelo de Dados.md), com RG e endereço,
+ * Tabela ALUNO do modelo de dados (docs/Sprint 3/Modelo de Dados.md), com RG e endereço,
  * que a HU02 pede.
  *
  * <p>O saldo não é coluna: cada Ego guarda o professor de origem, e o aluno tem uma

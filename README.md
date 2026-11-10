@@ -4,7 +4,7 @@ Sistema de moeda estudantil: professores reconhecem o mérito dos alunos com Ego
 
 - `backend/`: API REST em Java 21 com Spring Boot, JPA e H2 (banco em arquivo, em `backend/data/`).
 - `frontend/`: landing page e telas do sistema em React, TypeScript e Vite.
-- `docs/`: histórias de usuário, diagramas e o [modelo de dados](docs/Sprint%202/Modelo%20de%20Dados.md), com os endpoints e o formato dos avisos ao vivo. Veja o [índice](docs/README.md).
+- `docs/`: histórias de usuário, diagramas e o [modelo de dados](docs/Sprint%203/Modelo%20de%20Dados.md), com os endpoints e o formato dos avisos ao vivo. Veja o [índice](docs/README.md).
 
 ## Como rodar
 

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Tabela EMPRESA do modelo de dados (docs/Sprint 2/Modelo de Dados.md), com login e senha:
+ * Tabela EMPRESA do modelo de dados (docs/Sprint 3/Modelo de Dados.md), com login e senha:
  * a empresa entra no sistema para cadastrar vantagens (HU01, HU03, HU08).
  */
 @Getter
